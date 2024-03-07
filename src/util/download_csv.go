@@ -26,11 +26,11 @@ func downloadCSV(url string) []byte {
 	}
 
 	// データを標準出力に表示
-	log.Println(string(data))
+	// log.Println(string(data))
 
 	// UTF-8に変換
 	utf8Data := ShiftJISToUTF8(data)
-	log.Println(string(utf8Data))
+	// log.Println(string(utf8Data))
 	return utf8Data
 }
 

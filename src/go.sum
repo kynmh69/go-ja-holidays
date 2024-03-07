@@ -1,3 +1,5 @@
+github.com/doug-martin/goqu v5.0.0+incompatible h1:C7O6xQYoWpSGX32C1faMJWe1s82Ktr2jjWf2joReiSQ=
+github.com/doug-martin/goqu v5.0.0+incompatible/go.mod h1:4xBntUHXkdIh+CnYd+I2kdHgUTq1kJ+p7OBCngg7RrY=
 github.com/go-sql-driver/mysql v1.7.1 h1:lUIinVbN1DY0xBg0eMOzmmtGoHwWBbvnWubQUrtU8EI=
 github.com/go-sql-driver/mysql v1.7.1/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
 golang.org/x/text v0.14.0 h1:ScX5w1eTa3QqT8oi6+ziP7dTV1S2+ALU0bI+0zXKWiQ=
