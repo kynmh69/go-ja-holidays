@@ -52,6 +52,8 @@ func parseCSV(data []byte) ([]model.HolidayData, error) {
 	var holidays []model.HolidayData
 	// CSVデータをパース
 	reader := csv.NewReader(bytes.NewReader(data))
+	// ロケーションを取得
+	jst, _ := time.LoadLocation("Asia/Tokyo")
 	// CSVデータを一行ずつ読み込み
 	for {
 		record, err := reader.Read()
@@ -60,7 +62,7 @@ func parseCSV(data []byte) ([]model.HolidayData, error) {
 		}
 
 		// 日付を解析
-		date, err := time.Parse("2006/1/2", record[0])
+		date, err := time.ParseInLocation("2006/1/2", record[0], jst)
 		if err != nil {
 			log.Println("日付の解析に失敗:", err)
 			continue
