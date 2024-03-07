@@ -12,7 +12,6 @@ func TestDownloadCSV(t *testing.T) {
 		name string
 		args args
 	}{
-		// TODO: Add test cases.
 		{name: "download csv ok", args: args{url: okUrl}},
 		{name: "download csv ng", args: args{url: ngUrl}},
 	}
