@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -32,7 +33,8 @@ func ConnectDatabase() {
 	if !ok {
 		password = "password"
 	}
-	dataSourceName := username + ":" + password + hostname + ":" + port + "/holidays"
+
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/holidays", username, password, hostname, port)
 
 	Db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {

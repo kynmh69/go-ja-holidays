@@ -5,7 +5,7 @@ services:
       - mysql_data:/var/lib/mysql:rw
     environment:
       - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_USERNAME=api
+      - MYSQL_USER=api
       - MYSQL_PASSWORD=password
       - MYSQL_DATABASE=holidays
       - TZ=Asia/Tokyo
