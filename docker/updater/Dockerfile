@@ -9,6 +9,6 @@ RUN go build updater/main.go -o updater/bin/main
 
 FROM alpine
 
-COPY --from=build-stage updater/bin/main /usr/local/bin/main
+COPY --from=build-stage /go/app/updater/bin/main /usr/local/bin/main
 
 CMD [ "main" ]
