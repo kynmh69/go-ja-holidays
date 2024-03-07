@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type Holiday struct {
+type HolidayData struct {
 	Date time.Time `json:"date"`
 	Name string    `json:"name"`
 }
