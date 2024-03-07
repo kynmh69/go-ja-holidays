@@ -72,6 +72,6 @@ func parseCSV(data []byte) ([]model.HolidayData, error) {
 			Name: record[1],
 		})
 	}
-
+	log.Println(holidays)
 	return holidays, nil
 }
