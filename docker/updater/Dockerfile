@@ -1,13 +1,14 @@
-FROM golang:1.22 as build-stage
+FROM golang:1.22 AS build-stage
 
-COPY ./src/updater /go/app/updater
+COPY ./src /go/app
 WORKDIR /go/app
 
 RUN go mod download
 
-RUN go build updater/main.go -o updater/bin/main
+WORKDIR /go/app/updater
+RUN go build -o ./bin/main
 
-FROM alpine
+FROM alpine:latest
 
 COPY --from=build-stage /go/app/updater/bin/main /usr/local/bin/main
 
