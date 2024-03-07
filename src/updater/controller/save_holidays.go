@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/doug-martin/goqu"
+	"github.com/kynmh69/go-ja-holidays/database"
 	"github.com/kynmh69/go-ja-holidays/model"
 )
 
@@ -14,7 +15,7 @@ type HolidayData struct {
 
 func SaveHolidays(holidays []model.HolidayData) {
 	var oldRow HolidayData
-	found, err := goqu.From("holidays").Order(goqu.I("date").Desc()).Limit(1).ScanStruct(&oldRow)
+	found, err := database.GoquDb.From("holidays").Order(goqu.I("date").Desc()).Limit(1).ScanStruct(&oldRow)
 
 	if err != nil {
 		log.Fatalln(err)
