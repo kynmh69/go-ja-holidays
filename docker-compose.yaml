@@ -1,0 +1,29 @@
+services:
+  database:
+    image: mysql:8.0
+    volumes:
+      - mysql_data:/var/lib/mysql:rw
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USERNAME=app
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=holidays
+      - TZ=Asia/Tokyo
+    networks:
+      - net-1
+  data_updater:
+    build:
+      context: .
+      dockerfile: ./docker/updater/Dockerfile
+    environment:
+      - TZ=Asia/Tokyo
+    depends_on:
+      - database
+    networks:
+      - net-1
+
+volumes:
+  mysql_data:
+
+networks:
+  net-1:
