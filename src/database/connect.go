@@ -10,7 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql" //mysql driver
 )
 
-var GoquDb *goqu.Database
+var goquDb *goqu.Database
 
 func ConnectDatabase() {
 	// connect to database
@@ -34,7 +34,7 @@ func ConnectDatabase() {
 		log.Fatalln("can not ping.", err)
 	}
 
-	GoquDb = goqu.New("mysql", db)
+	goquDb = goqu.New("mysql", db)
 }
 
 func getConnectionInfo() (string, string, string, string) {
@@ -55,4 +55,8 @@ func getConnectionInfo() (string, string, string, string) {
 		password = "password"
 	}
 	return hostname, port, username, password
+}
+
+func GetDbConnection() *goqu.Database {
+	return goquDb
 }

@@ -15,7 +15,8 @@ type HolidayData struct {
 
 func SaveHolidays(holidays []model.HolidayData) {
 	var oldRow HolidayData
-	found, err := database.GoquDb.From("holidays").Order(goqu.I("date").Desc()).Limit(1).ScanStruct(&oldRow)
+	db := database.GetDbConnection()
+	found, err := db.From("holidays").Order(goqu.I("date").Desc()).Limit(1).ScanStruct(&oldRow)
 
 	if err != nil {
 		log.Fatalln(err)

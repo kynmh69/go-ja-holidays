@@ -20,5 +20,6 @@ func main() {
 
 	controller.SaveHolidays(holidays)
 
-	defer database.GoquDb.Db.Close()
+	db := database.GetDbConnection()
+	defer db.Db.Close()
 }
