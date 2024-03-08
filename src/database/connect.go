@@ -6,8 +6,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/doug-martin/goqu"
-	_ "github.com/go-sql-driver/mysql" //mysql driver
+	_ "github.com/go-sql-driver/mysql"
+
+	// import the dialect
+	"github.com/doug-martin/goqu/v9"
+	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
 )
 
 var goquDb *goqu.Database
@@ -35,6 +38,7 @@ func ConnectDatabase() {
 	}
 
 	goquDb = goqu.New("mysql", db)
+	goquDb.Logger(initLogger())
 }
 
 func getConnectionInfo() (string, string, string, string) {
@@ -59,4 +63,8 @@ func getConnectionInfo() (string, string, string, string) {
 
 func GetDbConnection() *goqu.Database {
 	return goquDb
+}
+
+func initLogger() *log.Logger {
+	return log.New(os.Stdout, "[SQL] ", log.LstdFlags|log.Lshortfile)
 }

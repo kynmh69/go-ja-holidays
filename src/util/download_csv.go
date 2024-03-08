@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/kynmh69/go-ja-holidays/model"
+	"github.com/kynmh69/go-ja-holidays/updater/controller"
 )
 
 func downloadCSV(url string) []byte {
@@ -34,10 +34,10 @@ func downloadCSV(url string) []byte {
 	return utf8Data
 }
 
-func CreateHolidayData(url string) []model.HolidayData {
+func CreateHolidayData(url string) []controller.HolidayDbData {
 	byteData := downloadCSV(url)
 
-	var holidayData []model.HolidayData
+	var holidayData []controller.HolidayDbData
 
 	// CSVデータをパース
 	holidayData, err := parseCSV(byteData)
@@ -48,8 +48,8 @@ func CreateHolidayData(url string) []model.HolidayData {
 	return holidayData
 }
 
-func parseCSV(data []byte) ([]model.HolidayData, error) {
-	var holidays []model.HolidayData
+func parseCSV(data []byte) ([]controller.HolidayDbData, error) {
+	var holidays []controller.HolidayDbData
 	// CSVデータをパース
 	reader := csv.NewReader(bytes.NewReader(data))
 	// ロケーションを取得
@@ -69,7 +69,7 @@ func parseCSV(data []byte) ([]model.HolidayData, error) {
 		}
 
 		// HolidayData構造体に変換して追加
-		holidays = append(holidays, model.HolidayData{
+		holidays = append(holidays, controller.HolidayDbData{
 			Date: date,
 			Name: record[1],
 		})
