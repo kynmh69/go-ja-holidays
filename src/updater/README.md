@@ -3,6 +3,22 @@
 このディレクトリは以下のスクリプトは祝日データベース更新スクリプトです。
 定期的に取得し、DBとの差分を更新します。
 
+## データベースのマイグレーション
+
+マイグレーションはgooseを利用します。
+
+### gooseのインストール
+
+```bash
+go install github.com/pressly/goose/v3/cmd/goose@latest
+```
+
+### マイグレーションの実行
+
+```bash
+goose mysql "root:secret@tcp(localhost:3306)/holidays?parseTime=true" up
+```
+
 ## 実行方法
 
 コンテナイメージになっているので、コンテナイメージをrunします。
