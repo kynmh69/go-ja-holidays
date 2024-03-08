@@ -7,6 +7,14 @@
 
 マイグレーションはgooseを利用します。
 
+### データベースの起動
+
+リポジトリ配下で実行します。
+
+```bash
+docker compose up -d database 
+```
+
 ### gooseのインストール
 
 ```bash
@@ -16,6 +24,7 @@ go install github.com/pressly/goose/v3/cmd/goose@latest
 ### マイグレーションの実行
 
 ```bash
+cd src/updater/database/migrations
 goose mysql "root:secret@tcp(localhost:3306)/holidays?parseTime=true" up
 ```
 
