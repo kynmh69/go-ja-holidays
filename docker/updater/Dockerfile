@@ -1,15 +1,12 @@
-FROM golang:1.22 AS build-stage
-
-COPY ./src /go/app
+# syntax=docker/dockerfile:1
+FROM golang:1.22 AS build-updater
+COPY src/ /go/app/
 WORKDIR /go/app
-
 RUN go mod download
-
 WORKDIR /go/app/updater
-RUN go build -o ./bin/main
+RUN CGO_ENABLED=0 go build -o bin/main
 
 FROM alpine:latest
+COPY --from=build-updater /go/app/updater/bin/main /usr/local/bin/
 
-COPY --from=build-stage /go/app/updater/bin/main /usr/local/bin/main
-
-CMD [ "main" ]
+CMD [ "/usr/local/bin/main" ]
