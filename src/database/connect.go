@@ -23,7 +23,7 @@ func ConnectDatabase() {
 
 	hostname, port, username, password := getConnectionInfo()
 
-	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", username, password, hostname, port, DATABASE_NAME)
+	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", hostname, port, username, password, DATABASE_NAME)
 
 	db, err := sql.Open("postgres", dataSourceName)
 	if err != nil {
@@ -39,26 +39,24 @@ func ConnectDatabase() {
 		log.Fatalln("can not ping.", err)
 	}
 
-	defer db.Close()
-
 	goquDb = goqu.New("postgres", db)
 	goquDb.Logger(initLogger())
 }
 
 func getConnectionInfo() (string, string, string, string) {
-	hostname, ok := os.LookupEnv("MYSQL_HOSTNAME")
+	hostname, ok := os.LookupEnv("PSQL_HOSTNAME")
 	if !ok {
 		hostname = "database"
 	}
-	port, ok := os.LookupEnv("MYSQL_PORT")
+	port, ok := os.LookupEnv("PSQL_PORT")
 	if !ok {
 		port = "5432"
 	}
-	username, ok := os.LookupEnv("MYSQL_USERNAME")
+	username, ok := os.LookupEnv("PSQL_USERNAME")
 	if !ok {
 		username = "app"
 	}
-	password, ok := os.LookupEnv("MYSQL_PASSWORD")
+	password, ok := os.LookupEnv("PSQL_PASSWORD")
 	if !ok {
 		password = "password"
 	}

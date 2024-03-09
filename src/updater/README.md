@@ -25,7 +25,7 @@ go install github.com/pressly/goose/v3/cmd/goose@latest
 
 ```bash
 cd src/updater/database/migrations
-goose mysql "root:secret@tcp(localhost:3306)/holidays?parseTime=true" up
+goose postgres "host=localhost user=app password=password dbname=holidays sslmode=disable" up
 ```
 
 ## 実行方法

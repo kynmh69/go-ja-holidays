@@ -67,6 +67,9 @@ func parseCSV(data []byte) ([]controller.HolidayDbData, error) {
 			log.Println("日付の解析に失敗:", err)
 			continue
 		}
+		if date.Year() < 1970 {
+			continue // 1970年以前のデータは無視する
+		}
 
 		// HolidayData構造体に変換して追加
 		holidays = append(holidays, controller.HolidayDbData{

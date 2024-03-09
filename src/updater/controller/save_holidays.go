@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/doug-martin/goqu/v9"
 	"github.com/kynmh69/go-ja-holidays/database"
 )
 
@@ -16,6 +17,10 @@ const TABLE_HOLIDAYS_JP = "holidays_jp"
 
 func SaveHolidays(holidays []HolidayDbData) {
 	latestHoliday, ok := getLatestHoliday()
+	if len(holidays) == 0 {
+		log.Println("データがないため追加しません")
+		return
+	}
 	newHoliday := holidays[len(holidays)-1]
 	if ok && latestHoliday.Date != newHoliday.Date {
 		// 差分を更新
@@ -47,6 +52,10 @@ func getLatestHoliday() (HolidayDbData, bool) {
 
 func firstInsertHolidays(holidays []HolidayDbData) {
 	db := database.GetDbConnection()
+
+	timeLocation := holidays[0].Date.Location()
+	goqu.SetTimeLocation(timeLocation)
+
 	result, err := db.Insert(TABLE_HOLIDAYS_JP).Rows(holidays).Executor().Exec()
 	if err != nil {
 		log.Fatalln(err)

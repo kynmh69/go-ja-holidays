@@ -69,5 +69,5 @@ CREATE TRIGGER refresh_holidays_jp_updated_at_step3
 -- +goose Down
 -- +goose StatementBegin
 SELECT 'down SQL query';
-DROP TABLE
+DROP TABLE IF EXISTS holidays_jp;
 -- +goose StatementEnd
