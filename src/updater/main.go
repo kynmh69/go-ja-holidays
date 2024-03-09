@@ -19,7 +19,6 @@ func main() {
 	url := "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv"
 
 	holidays := util.CreateHolidayData(url)
-	// log.Println(holidays)
 
 	controller.SaveHolidays(holidays)
 }
