@@ -28,6 +28,13 @@ cd src/updater/database/migrations
 goose postgres "host=localhost user=app password=password dbname=holidays sslmode=disable" up
 ```
 
+### マイグレーションの削除
+
+```bash
+cd src/updater/database/migrations
+goose postgres "host=localhost user=app password=password dbname=holidays sslmode=disable" down
+```
+
 ## 実行方法
 
 コンテナイメージになっているので、コンテナイメージをrunします。
