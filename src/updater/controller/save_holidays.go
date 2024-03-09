@@ -9,8 +9,11 @@ import (
 )
 
 type HolidayDbData struct {
-	Date time.Time `db:"holiday_date"`
-	Name string    `db:"holiday_name"`
+	Uuid      string    `db:"id" goqu:"skipinsert"`
+	Date      time.Time `db:"holiday_date"`
+	Name      string    `db:"holiday_name"`
+	CreatedAt time.Time `db:"created_at" goqu:"skipinsert"`
+	UpdatedAt time.Time `db:"updated_at" goqu:"skipinsert"`
 }
 
 const TABLE_HOLIDAYS_JP = "holidays_jp"
@@ -22,11 +25,12 @@ func SaveHolidays(holidays []HolidayDbData) {
 		return
 	}
 	newHoliday := holidays[len(holidays)-1]
-	if ok && latestHoliday.Date != newHoliday.Date {
+	if ok && latestHoliday.Date.UTC() != newHoliday.Date.UTC() {
 		// 差分を更新
-		log.Println("save new holiday")
+		log.Println("save new holiday", latestHoliday, newHoliday)
 	} else {
 		// 新規登録
+		log.Println("First submit")
 		firstInsertHolidays(holidays)
 	}
 
@@ -35,14 +39,16 @@ func SaveHolidays(holidays []HolidayDbData) {
 func getLatestHoliday() (HolidayDbData, bool) {
 	var oldRow HolidayDbData
 	db := database.GetDbConnection()
-	ok, err := db.From(TABLE_HOLIDAYS_JP).ScanStruct(&oldRow)
+	ok, err := db.From(TABLE_HOLIDAYS_JP).
+		Order(goqu.C("holiday_date").Desc()).
+		ScanStruct(&oldRow)
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	if ok {
-		log.Println("old row found")
+		log.Println("old row found", oldRow)
 	} else {
 		log.Println("old row not found")
 	}
@@ -53,6 +59,7 @@ func getLatestHoliday() (HolidayDbData, bool) {
 func firstInsertHolidays(holidays []HolidayDbData) {
 	db := database.GetDbConnection()
 
+	// タムゾーンをCSV元のものに変更
 	timeLocation := holidays[0].Date.Location()
 	goqu.SetTimeLocation(timeLocation)
 
@@ -60,6 +67,9 @@ func firstInsertHolidays(holidays []HolidayDbData) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	log.Println(result)
+	if affected, err := result.RowsAffected(); err == nil {
+		log.Println("successfull.", affected)
+	} else {
+		log.Fatalln("Rows Affected err.", err)
+	}
 }

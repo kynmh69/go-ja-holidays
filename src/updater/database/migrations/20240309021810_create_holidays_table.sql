@@ -51,8 +51,14 @@ CREATE TABLE holidays_jp (
     holiday_date TIMESTAMPTZ NOT NULL,
     holiday_name TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+    UNIQUE (holiday_date)
 );
+
+CREATE INDEX idx_holidays_jp_holiday_date ON holidays_jp (holiday_date);
+CREATE INDEX idx_holidays_jp_created_at ON holidays_jp (created_at);
+CREATE INDEX idx_holidays_jp_updated_at ON holidays_jp (updated_at);
+CREATE INDEX idx_holidays_jp_id ON holidays_jp (id);
 
 CREATE TRIGGER refresh_holidays_jp_updated_at_step1
   BEFORE UPDATE ON holidays_jp FOR EACH ROW
@@ -70,4 +76,8 @@ CREATE TRIGGER refresh_holidays_jp_updated_at_step3
 -- +goose StatementBegin
 SELECT 'down SQL query';
 DROP TABLE IF EXISTS holidays_jp;
+DROP FUNCTION refresh_updated_at_step1();
+DROP FUNCTION refresh_updated_at_step2();
+DROP FUNCTION refresh_updated_at_step3();
+DROP FUNCTION uuid_generate_v7();
 -- +goose StatementEnd
