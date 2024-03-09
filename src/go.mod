@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0
-	github.com/go-sql-driver/mysql v1.7.1
+	github.com/lib/pq v1.10.1
 	golang.org/x/text v0.14.0
 )
 

@@ -6,14 +6,16 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 
 	// import the dialect
 	"github.com/doug-martin/goqu/v9"
-	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
+	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
 )
 
 var goquDb *goqu.Database
+
+const DATABASE_NAME = "holidays"
 
 func ConnectDatabase() {
 	// connect to database
@@ -21,9 +23,9 @@ func ConnectDatabase() {
 
 	hostname, port, username, password := getConnectionInfo()
 
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/holidays", username, password, hostname, port)
+	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", username, password, hostname, port, DATABASE_NAME)
 
-	db, err := sql.Open("mysql", dataSourceName)
+	db, err := sql.Open("postgres", dataSourceName)
 	if err != nil {
 		log.Fatalln("can not open database.", err)
 	}
@@ -37,7 +39,9 @@ func ConnectDatabase() {
 		log.Fatalln("can not ping.", err)
 	}
 
-	goquDb = goqu.New("mysql", db)
+	defer db.Close()
+
+	goquDb = goqu.New("postgres", db)
 	goquDb.Logger(initLogger())
 }
 
@@ -48,11 +52,11 @@ func getConnectionInfo() (string, string, string, string) {
 	}
 	port, ok := os.LookupEnv("MYSQL_PORT")
 	if !ok {
-		port = "3306"
+		port = "5432"
 	}
 	username, ok := os.LookupEnv("MYSQL_USERNAME")
 	if !ok {
-		username = "api"
+		username = "app"
 	}
 	password, ok := os.LookupEnv("MYSQL_PASSWORD")
 	if !ok {

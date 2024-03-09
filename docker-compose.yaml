@@ -1,18 +1,18 @@
 services:
   database:
-    image: mysql:8.0
+    image: postgres:16
     volumes:
-      - mysql_data:/var/lib/mysql:rw
+      - psql_data:/var/lib/postgresql/data:rw
+    restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_USER=api
-      - MYSQL_PASSWORD=password
-      - MYSQL_DATABASE=holidays
       - TZ=Asia/Tokyo
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=holidays
     networks:
       - net-1
     ports:
-      - "3306:3306"
+      - "5432:5432"
 
   data_updater:
     build:
@@ -26,7 +26,7 @@ services:
       - net-1
 
 volumes:
-  mysql_data:
+  psql_data:
 
 networks:
   net-1:
