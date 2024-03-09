@@ -1,0 +1,32 @@
+services:
+  database:
+    image: postgres:16
+    volumes:
+      - psql_data:/var/lib/postgresql/data:rw
+    restart: always
+    environment:
+      - TZ=Asia/Tokyo
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=holidays
+    networks:
+      - net-1
+    ports:
+      - "5432:5432"
+
+  data_updater:
+    build:
+      context: .
+      dockerfile: ./docker/updater/Dockerfile
+    environment:
+      - TZ=Asia/Tokyo
+    depends_on:
+      - database
+    networks:
+      - net-1
+
+volumes:
+  psql_data:
+
+networks:
+  net-1:
