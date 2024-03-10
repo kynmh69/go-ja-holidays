@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  UPDATER_DIR: "src/updater"
+  API_DIR: "src/api"
+
 jobs:
 
   test-updater:
@@ -32,10 +36,14 @@ jobs:
         go mod download
 
     - name: Build
-      run: go build -v ./src/updater
+      run: |
+        cd ${{ env.UPDATER_DIR }}
+        go build -v .
 
     - name: Test
-      run: go test -v ./src/updater
+      run: |
+        cd ${{ env.UPDATER_DIR }}
+        go test -v .
 
   test-api:
     runs-on: ubuntu-latest
@@ -58,7 +66,11 @@ jobs:
         go mod download
 
     - name: Build
-      run: go build -v ./src/api
+      run: |
+        cd ${{ env.API_DIR }}
+        go build -v .
 
     - name: Test
-      run: go test -v ./src/api
+      run: |
+        cd ${{ env.API_DIR }}
+        go test -v .
