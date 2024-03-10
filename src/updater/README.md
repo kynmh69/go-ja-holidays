@@ -1,5 +1,7 @@
 # 祝日データベース更新スクリプト
 
+[![Create updater image](https://github.com/kynmh69/go-ja-holidays/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/kynmh69/go-ja-holidays/actions/workflows/docker-publish.yml) [![Go Test](https://github.com/kynmh69/go-ja-holidays/actions/workflows/go.yml/badge.svg)](https://github.com/kynmh69/go-ja-holidays/actions/workflows/go.yml) [![CodeQL](https://github.com/kynmh69/go-ja-holidays/actions/workflows/codeql.yml/badge.svg)](https://github.com/kynmh69/go-ja-holidays/actions/workflows/codeql.yml)
+
 このディレクトリは以下のスクリプトは祝日データベース更新スクリプトです。
 定期的に取得し、DBとの差分を更新します。
 
