@@ -37,6 +37,8 @@ services:
       - net-1
     volumes:
       - ./src:/go/app:rw
+    ports:
+      - 8080:80
 
 volumes:
   psql_data:
