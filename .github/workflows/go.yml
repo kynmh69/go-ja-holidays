@@ -25,16 +25,6 @@ jobs:
       with:
         go-version: '1.22'
 
-    - name: List files
-      run: ls -l ${{ github.workspace }}
-
-    - name: Go mod download
-      run: |
-        pwd
-        cd src
-        pwd
-        go mod download
-
     - name: Build
       run: |
         cd ${{ env.UPDATER_DIR }}
@@ -54,16 +44,6 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.22'
-
-    - name: List files
-      run: ls -l ${{ github.workspace }}
-
-    - name: Go mod download
-      run: |
-        pwd
-        cd src
-        pwd
-        go mod download
 
     - name: Build
       run: |
