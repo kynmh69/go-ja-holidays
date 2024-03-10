@@ -11,7 +11,7 @@ import (
 )
 
 func IsHoliday(c echo.Context) error {
-	var isHoliday model.IsHoliday
+	var holiday model.HolidayData
 	db := database.GetDbConnection()
 
 	logger := c.Logger()
@@ -28,12 +28,24 @@ func IsHoliday(c echo.Context) error {
 		return BadRequestJson(c, err.Error())
 	}
 
+	loc := dayTime.Location()
+	goqu.SetTimeLocation(loc)
+
 	dataSet := db.From(TABLE_HOLIDAYS_JP).
-		Where(goqu.C(TABLE_HOLIDAYS_JP).Eq(dayTime))
-	_, err = dataSet.ScanStruct(&isHoliday)
+		Where(goqu.C(COLUMN_DATE).Eq(dayTime))
+	ok, err := dataSet.ScanStruct(&holiday)
 
 	if err != nil {
+		logger.Error(err)
 		return BadRequestJson(c, err.Error())
 	}
+
+	var isHoliday model.IsHoliday
+	if ok {
+		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: holiday}
+	} else {
+		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: *dayTime}}
+	}
+	logger.Debug(isHoliday)
 	return c.JSON(http.StatusOK, isHoliday)
 }
