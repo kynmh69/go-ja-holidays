@@ -36,7 +36,7 @@ jobs:
         cache-dependency-path: |
               src/go.sum
 
-    - name: run migration
+    - name: Run migration
       working-directory: ${{ env.UPDATER_DIR }}
       shell: bash -l {0}
       run: |
