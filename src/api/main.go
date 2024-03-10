@@ -49,8 +49,7 @@ func initWriter() io.Writer {
 }
 
 func createFile(logDir string) *os.File {
-	now := time.Now()
-	nowStr := now.Format("2006-01-02-15-04-05")
+	nowStr := time.Now().Format("2006-01-02")
 	logFileName := fmt.Sprintf("app_%s.log", nowStr)
 	logFile := filepath.Join(logDir, logFileName)
 	file, err := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE, 0644)
