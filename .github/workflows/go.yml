@@ -43,6 +43,7 @@ jobs:
 
     - name: run migration
       working-directory: ${{ env.UPDATER_DIR }}
+      shell: bash -l {0}
       run: |
         go get -u github.com/pressly/goose/cmd/goose
         goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
