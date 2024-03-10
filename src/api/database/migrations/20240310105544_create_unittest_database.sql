@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 SELECT 'up SQL query';
--- +goose StatementEnd
+
 --
 -- PostgreSQL database dump
 --
@@ -97,41 +97,6 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
---
--- Name: goose_db_version; Type: TABLE; Schema: public; Owner: app
---
-
-CREATE TABLE public.goose_db_version (
-    id integer NOT NULL,
-    version_id bigint NOT NULL,
-    is_applied boolean NOT NULL,
-    tstamp timestamp without time zone DEFAULT now()
-);
-
-
-ALTER TABLE public.goose_db_version OWNER TO app;
-
---
--- Name: goose_db_version_id_seq; Type: SEQUENCE; Schema: public; Owner: app
---
-
-CREATE SEQUENCE public.goose_db_version_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.goose_db_version_id_seq OWNER TO app;
-
---
--- Name: goose_db_version_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: app
---
-
-ALTER SEQUENCE public.goose_db_version_id_seq OWNED BY public.goose_db_version.id;
-
 
 --
 -- Name: holidays_jp; Type: TABLE; Schema: public; Owner: app
@@ -147,22 +112,6 @@ CREATE TABLE public.holidays_jp (
 
 
 ALTER TABLE public.holidays_jp OWNER TO app;
-
---
--- Name: goose_db_version id; Type: DEFAULT; Schema: public; Owner: app
---
-
-ALTER TABLE ONLY public.goose_db_version ALTER COLUMN id SET DEFAULT nextval('public.goose_db_version_id_seq'::regclass);
-
-
---
--- Data for Name: goose_db_version; Type: TABLE DATA; Schema: public; Owner: app
---
-
-COPY public.goose_db_version (id, version_id, is_applied, tstamp) FROM stdin;
-1	0	t	2024-03-09 11:38:32.202869
-3	20240309021810	t	2024-03-09 12:51:32.214776
-\.
 
 
 --
@@ -1105,11 +1054,11 @@ CREATE TRIGGER refresh_holidays_jp_updated_at_step2 BEFORE UPDATE OF updated_at 
 
 CREATE TRIGGER refresh_holidays_jp_updated_at_step3 BEFORE UPDATE ON public.holidays_jp FOR EACH ROW EXECUTE FUNCTION public.refresh_updated_at_step3();
 
-
 --
 -- PostgreSQL database dump complete
 --
 
+-- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
