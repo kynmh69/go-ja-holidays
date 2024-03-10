@@ -36,18 +36,12 @@ jobs:
         cache-dependency-path: |
               src/go.sum
 
-    - name: setup bash_profile
-      run: |
-        echo 'export GOPATH="$HOME/go"' >>~/.bash_profile
-        echo 'export PATH="$GOPATH/bin:$PATH"' >>~/.bash_profile
-        source ~/.bash_profile
-
     - name: run migration
       working-directory: ${{ env.UPDATER_DIR }}
       shell: bash -l {0}
       run: |
         go get -u github.com/pressly/goose/cmd/goose
-        goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
+        $HOME/go/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
 
     - name: Build
       working-directory: ${{ env.UPDATER_DIR }}
