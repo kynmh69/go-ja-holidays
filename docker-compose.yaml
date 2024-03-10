@@ -28,7 +28,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: .docker/api/Dockerfile
+      dockerfile: ./docker/api/Dockerfile
     environment:
       - TZ=Asia/Tokyo
     depends_on:

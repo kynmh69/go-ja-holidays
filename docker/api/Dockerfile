@@ -7,4 +7,4 @@ RUN go install github.com/cosmtrek/air@latest
 RUN go mod download
 WORKDIR /go/app/api
 
-CMD [ "air", "-c", "air.toml"]
+CMD [ "air", "-c", ".air.toml"]

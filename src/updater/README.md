@@ -44,3 +44,10 @@ docker composeで実行します。
 ```bash
 docker compose up -d
 ```
+
+## 設定できる環境変数
+
+- `PSQL_HOSTNAME`：データベースのホスト名
+- `PSQL_PORT`：データベースのポート
+- `PSQL_USERNAME`：データベースのユーザ名
+- `PSQL_PASSWORD`：データベースのパスワード
