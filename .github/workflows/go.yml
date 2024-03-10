@@ -40,6 +40,7 @@ jobs:
       run: |
         echo 'export GOPATH="$HOME/go"' >>~/.bash_profile
         echo 'export PATH="$GOPATH/bin:$PATH"' >>~/.bash_profile
+        source ~/.bash_profile
 
     - name: run migration
       working-directory: ${{ env.UPDATER_DIR }}
