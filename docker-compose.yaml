@@ -31,6 +31,7 @@ services:
       dockerfile: ./docker/api/Dockerfile
     environment:
       - TZ=Asia/Tokyo
+      - LOG_LEVEL=debug
     depends_on:
       - database
     networks:

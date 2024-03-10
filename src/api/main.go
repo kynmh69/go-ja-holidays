@@ -6,6 +6,7 @@ import (
 	originLog "log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/kynmh69/go-ja-holidays/api/router"
@@ -34,7 +35,7 @@ func initEcho() *echo.Echo {
 func loggerInitialize(e *echo.Echo) {
 	logger := e.Logger
 	logger.SetPrefix("[APP]")
-	logger.SetLevel(log.DEBUG)
+	logger.SetLevel(getLoggerLevel())
 	logger.SetOutput(initWriter())
 }
 
@@ -57,4 +58,28 @@ func createFile(logDir string) *os.File {
 		originLog.Fatalln("Not open log file", err)
 	}
 	return file
+}
+
+func getLoggerLevel() log.Lvl {
+	level, ok := os.LookupEnv("LOG_LEVEL")
+	if !ok {
+		level = "info"
+	}
+	level = strings.ToLower(level)
+	levelNo := log.INFO
+	switch level {
+	case "debug":
+		levelNo = log.DEBUG
+	case "info":
+		levelNo = log.INFO
+	case "warn":
+		levelNo = log.WARN
+	case "warning":
+		levelNo = log.WARN
+	case "error":
+		levelNo = log.ERROR
+	default:
+		levelNo = log.OFF
+	}
+	return levelNo
 }

@@ -7,3 +7,4 @@
 - `PSQL_USERNAME`：データベースのユーザ名
 - `PSQL_PASSWORD`：データベースのパスワード
 - `LOG_DIR`：ログの出力先
+- `LOG_LEVEL`：ログレベル

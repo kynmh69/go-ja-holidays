@@ -22,6 +22,11 @@ const (
 func GetHolidays(c echo.Context) error {
 	var holidays []model.HolidayData
 	db := database.GetDbConnection()
+	if location, err := time.LoadLocation(LOCATION); err != nil {
+		return BadRequestJson(c, err.Error())
+	} else {
+		goqu.SetTimeLocation(location)
+	}
 
 	startDay, err := getStartDate(c)
 	if err != nil {
@@ -35,16 +40,16 @@ func GetHolidays(c echo.Context) error {
 
 	dataSet := db.From(TABLE_HOLIDAYS_JP).Order(goqu.C(COLUMN_DATE).Asc())
 	if startDay != nil && endDay != nil {
-		dataSet.Where(
+		dataSet = dataSet.Where(
 			goqu.C(COLUMN_DATE).Gte(startDay),
 			goqu.C(COLUMN_DATE).Lte(endDay),
 		)
 	} else if startDay != nil {
-		dataSet.Where(
+		dataSet = dataSet.Where(
 			goqu.C(COLUMN_DATE).Gte(startDay),
 		)
 	} else if endDay != nil {
-		dataSet.Where(
+		dataSet = dataSet.Where(
 			goqu.C(COLUMN_DATE).Lte(endDay),
 		)
 	}
@@ -54,11 +59,16 @@ func GetHolidays(c echo.Context) error {
 }
 
 func getStartDate(c echo.Context) (*time.Time, error) {
+	logger := c.Logger()
 	startDateStr := c.QueryParam("start-day")
+	logger.Debug("start-day: ", startDateStr)
 	if startDateStr == "" {
 		return nil, nil
 	}
-	startDate := createTime(startDateStr)
+	startDate, err := createTime(c, startDateStr)
+	if err != nil {
+		return nil, err
+	}
 	if startDate == nil {
 		return nil, errors.New("cannot parse start day")
 	}
@@ -67,13 +77,18 @@ func getStartDate(c echo.Context) (*time.Time, error) {
 }
 
 func getEndDate(c echo.Context) (*time.Time, error) {
+	logger := c.Logger()
 	endDateStr := c.QueryParam("end-day")
+	logger.Debug("end-day: ", endDateStr)
 	if endDateStr == "" {
 		return nil, nil
 	}
-	endDate := createTime(endDateStr)
+	endDate, err := createTime(c, endDateStr)
+	if err != nil {
+		return nil, err
+	}
 	if endDate == nil {
-		return nil, errors.New("cannot parse start day")
+		return nil, errors.New("cannot parse end day")
 	}
 
 	return endDate, nil
@@ -89,21 +104,23 @@ func isValidDate(dateStr string) bool {
 	return matched
 }
 
-func createTime(dateStr string) *time.Time {
+func createTime(c echo.Context, dateStr string) (*time.Time, error) {
+	logger := c.Logger()
 	layout := "2006-01-02"
-	location, err := time.LoadLocation("Asia/Tokyo")
+	location, err := time.LoadLocation(LOCATION)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	if !isValidDate(dateStr) {
-		return nil
+		return nil, errors.New("the date format is invalid. like " + layout)
 	}
 
 	parseTime, err := time.ParseInLocation(layout, dateStr, location)
+	logger.Debug(parseTime)
 
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	return &parseTime
+	return &parseTime, nil
 }
