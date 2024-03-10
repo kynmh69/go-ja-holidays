@@ -22,8 +22,14 @@ jobs:
         go-version: '1.22'
 
     - name: List files
+      run: ls -l ${{ github.workspace }}
+
+    - name: Go mod download
       run: |
-        ls -l ${{ github.workspace }}
+        pwd
+        cd src
+        pwd
+        go mod download
 
     - name: Build
       run: go build -v ./src/updater
@@ -35,11 +41,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
         go-version: '1.22'
+
+    - name: List files
+      run: ls -l ${{ github.workspace }}
+
+    - name: Go mod download
+      run: |
+        pwd
+        cd src
+        pwd
+        go mod download
 
     - name: Build
       run: go build -v ./src/api
