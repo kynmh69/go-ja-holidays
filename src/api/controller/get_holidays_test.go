@@ -38,7 +38,6 @@ func TestGetHolidays(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "OK",
 			args: args{
@@ -60,11 +59,14 @@ func Test_getStartDate(t *testing.T) {
 	// Setup
 	e := echo.New()
 	q := make(url.Values)
-	q.Set("end-day", "2023-01-01")
+	q.Set("start-day", "2023-01-01")
 	req := httptest.NewRequest(http.MethodGet, "/holidays?"+q.Encode(), nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	loc, _ := time.LoadLocation("Asia/Tokyo")
+	ti := time.Date(2023, 1, 1, 0, 0, 0, 0, loc)
+
 	type args struct {
 		c echo.Context
 	}
@@ -79,7 +81,7 @@ func Test_getStartDate(t *testing.T) {
 			args: args{
 				c: c,
 			},
-			want:    &time.Time{},
+			want:    &ti,
 			wantErr: false,
 		},
 	}
@@ -106,6 +108,8 @@ func Test_getEndDate(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	loc, _ := time.LoadLocation("Asia/Tokyo")
+	ti := time.Date(2023, 1, 1, 0, 0, 0, 0, loc)
 	type args struct {
 		c echo.Context
 	}
@@ -120,7 +124,7 @@ func Test_getEndDate(t *testing.T) {
 			args: args{
 				c: c,
 			},
-			want:    &time.Time{},
+			want:    &ti,
 			wantErr: false,
 		},
 	}
@@ -178,7 +182,8 @@ func Test_createTime(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-
+	loc, _ := time.LoadLocation("Asia/Tokyo")
+	ti := time.Date(2023, 1, 1, 0, 0, 0, 0, loc)
 	type args struct {
 		c       echo.Context
 		dateStr string
@@ -195,11 +200,11 @@ func Test_createTime(t *testing.T) {
 				c:       c,
 				dateStr: "2023-01-01",
 			},
-			want:    &time.Time{},
+			want:    &ti,
 			wantErr: false,
 		},
 		{
-			name: "ok",
+			name: "NG",
 			args: args{
 				c:       c,
 				dateStr: "2023-01-0",
