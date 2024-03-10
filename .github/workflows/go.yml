@@ -14,11 +14,18 @@ env:
   API_DIR: "src/api"
 
 jobs:
-
-
-
   test-updater:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: unittest
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@v4
 
@@ -26,16 +33,22 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.22'
+        cache-dependency-path: |
+              src/go.sum
+
+    - name: run migration
+      working-directory: ${{ env.UPDATER_DIR }}
+      run: |
+        go get -u github.com/pressly/goose/cmd/goose
+        goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
 
     - name: Build
-      run: |
-        cd ${{ env.UPDATER_DIR }}
-        go build -v ./...
+      working-directory: ${{ env.UPDATER_DIR }}
+      run: go build -v ./...
 
     - name: Test
-      run: |
-        cd ${{ env.UPDATER_DIR }}
-        go test -v ./...
+      working-directory: ${{ env.UPDATER_DIR }}
+      run: go test -v ./...
 
   test-api:
     runs-on: ubuntu-latest
@@ -46,6 +59,8 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.22'
+        cache-dependency-path: |
+            src/go.sum
 
     - name: Build
       run: |
