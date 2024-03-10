@@ -36,6 +36,11 @@ jobs:
         cache-dependency-path: |
               src/go.sum
 
+    - name: setup bash_profile
+      run: |
+        echo 'export GOPATH="$HOME/go"' >>~/.bash_profile
+        echo 'PATH="$GOPATH/bin:$PATH"' >>~/.bash_profile
+
     - name: run migration
       working-directory: ${{ env.UPDATER_DIR }}
       run: |
