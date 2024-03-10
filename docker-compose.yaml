@@ -24,6 +24,22 @@ services:
       - database
     networks:
       - net-1
+  
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+    environment:
+      - TZ=Asia/Tokyo
+      - LOG_LEVEL=debug
+    depends_on:
+      - database
+    networks:
+      - net-1
+    volumes:
+      - ./src:/go/app:rw
+    ports:
+      - 8080:80
 
 volumes:
   psql_data:

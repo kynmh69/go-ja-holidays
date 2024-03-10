@@ -73,7 +73,7 @@ func firstInsertHolidays(holidays []HolidayDbData) {
 
 	result, err := db.Insert(TABLE_HOLIDAYS_JP).Rows(holidays).Executor().Exec()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	if affected, err := result.RowsAffected(); err == nil {
 		log.Println("successfull.", affected)
