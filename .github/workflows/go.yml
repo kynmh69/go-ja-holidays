@@ -41,6 +41,7 @@ jobs:
       shell: bash -l {0}
       run: |
         go get -u github.com/pressly/goose/cmd/goose
+        go env GOPATH
         $HOME/go/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
 
     - name: Build
