@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/kynmh69/go-ja-holidays/api/middleware"
 	"github.com/kynmh69/go-ja-holidays/api/router"
 	"github.com/kynmh69/go-ja-holidays/database"
 	"github.com/kynmh69/go-ja-holidays/util"
@@ -13,7 +14,7 @@ func init() {
 }
 func main() {
 	e := initEcho()
-	util.EchoLoggerInitialize(e)
+	middleware.SetMiddleware(e)
 	logger := e.Logger
 	router.MakeRoute(e)
 	logger.Fatal(e.Start(":80"))

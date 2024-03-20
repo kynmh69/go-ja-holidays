@@ -46,10 +46,10 @@ func EchoLoggerInitialize(e *echo.Echo) {
 	logger := e.Logger
 	logger.SetPrefix("[APP]")
 	logger.SetLevel(GetLoggerLevel())
-	logger.SetOutput(initWriter())
+	logger.SetOutput(InitWriter())
 }
 
-func initWriter() io.Writer {
+func InitWriter() io.Writer {
 	logDir, ok := os.LookupEnv("LOG_DIR")
 	if !ok {
 		logDir = "./log/"

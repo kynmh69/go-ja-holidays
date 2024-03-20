@@ -10,6 +10,7 @@
 - `PSQL_PASSWORD`：データベースのパスワード
 - `LOG_DIR`：ログの出力先
 - `LOG_LEVEL`：ログレベル
+- `LOG_FORMAT`: ログフォーマット
 
 ## URI
 
