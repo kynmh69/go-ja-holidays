@@ -13,7 +13,7 @@ func TestCountHolidays(t *testing.T) {
 	e := echo.New()
 	q := make(url.Values)
 	q.Set("end-day", "2023-01-01")
-	req := httptest.NewRequest(http.MethodGet, "/holidays", nil)
+	req := httptest.NewRequest(http.MethodGet, "/holidays/count", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
