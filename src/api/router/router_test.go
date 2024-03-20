@@ -54,3 +54,26 @@ func tearDown() {
 	}
 	log.Println("Teardown.")
 }
+
+func TestSetPrometheusHandler(t *testing.T) {
+	e := echo.New()
+	type args struct {
+		e *echo.Echo
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "test ok",
+			args: args{
+				e: e,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			SetPrometheusHandler(tt.args.e)
+		})
+	}
+}
