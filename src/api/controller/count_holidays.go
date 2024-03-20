@@ -10,7 +10,7 @@ import (
 )
 
 type CountStruct struct {
-	Count int64
+	Count int64 `json:"count"`
 }
 
 func CountHolidays(c echo.Context) error {
