@@ -14,6 +14,7 @@ type CountStruct struct {
 }
 
 func CountHolidays(c echo.Context) error {
+	logger := c.Logger()
 	if location, err := time.LoadLocation(LOCATION); err != nil {
 		return BadRequestJson(c, err.Error())
 	} else {
@@ -52,5 +53,6 @@ func CountHolidays(c echo.Context) error {
 		return BadRequestJson(c, err.Error())
 	}
 	stru := CountStruct{Count: count}
+	logger.Debug("count:", stru)
 	return c.JSON(http.StatusOK, stru)
 }
