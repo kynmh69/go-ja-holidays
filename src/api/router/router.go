@@ -8,4 +8,5 @@ import (
 func MakeRoute(e *echo.Echo) {
 	e.GET("/holidays", controller.GetHolidays)
 	e.GET("/holidays/:day", controller.IsHoliday)
+	e.GET("/holidays/count", controller.CountHolidays)
 }
