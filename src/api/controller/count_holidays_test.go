@@ -12,6 +12,7 @@ import (
 func TestCountHolidays(t *testing.T) {
 	e := echo.New()
 	q := make(url.Values)
+	q.Set("start-day", "2022-01-01")
 	q.Set("end-day", "2023-01-01")
 	req := httptest.NewRequest(http.MethodGet, "/holidays/count", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -26,7 +27,6 @@ func TestCountHolidays(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test OK",
 			args: args{
