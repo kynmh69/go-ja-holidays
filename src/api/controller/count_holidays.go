@@ -35,12 +35,12 @@ func CountHolidays(c echo.Context) error {
 
 	dataSet := db.From(TABLE_HOLIDAYS_JP)
 	if startDay != nil && endDay != nil {
-		dataSet.Where(
+		dataSet = dataSet.Where(
 			goqu.C(COLUMN_DATE).Gte(startDay),
 			goqu.C(COLUMN_DATE).Lte(endDay),
 		)
 	} else if startDay != nil {
-		dataSet.Where(
+		dataSet = dataSet.Where(
 			goqu.C(COLUMN_DATE).Gte(startDay),
 		)
 	} else if endDay != nil {
