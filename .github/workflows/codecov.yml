@@ -61,7 +61,7 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  test-api:
+  coverage-api:
     runs-on: ubuntu-latest
     services:
       postgres:
