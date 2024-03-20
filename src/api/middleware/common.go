@@ -9,4 +9,5 @@ func SetMiddleware(e *echo.Echo) {
 	e.Use(setLogger())
 	e.Use(mid.CORS())
 	e.Use(mid.CSRF())
+	e.Use(SetPrometheus())
 }
