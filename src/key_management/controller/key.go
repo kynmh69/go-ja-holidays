@@ -20,15 +20,15 @@ func (k KeyManagement) Retrieve(c echo.Context) error {
 		return util.ServerError(c, err)
 	}
 	logger.Debug(apiKeys)
-	return c.HTML(http.StatusOK, "")
+	return c.Render(http.StatusOK, "top", apiKeys)
 }
 
 func (k KeyManagement) Create(c echo.Context) error {
-	_, err := model.CreateApiKey(c)
+	apiKeys, err := model.CreateApiKey(c)
 	if err != nil {
 		return util.ServerError(c, err)
 	}
-	return c.HTML(http.StatusCreated, "")
+	return c.Render(http.StatusCreated, "top", apiKeys)
 }
 
 func (k KeyManagement) Update(c echo.Context) error {
@@ -36,13 +36,17 @@ func (k KeyManagement) Update(c echo.Context) error {
 }
 
 func (k KeyManagement) Delete(c echo.Context) error {
-	_, err := model.DeleteApiKey(c)
+	apikeys, err := model.DeleteApiKey(c)
 	if err != nil {
 		return err
 	}
-	return c.HTML(http.StatusAccepted, "")
+	return c.Render(http.StatusAccepted, "top", apikeys)
 }
 
 func (k KeyManagement) GetControllerName() string {
 	return k.ControllerName
+}
+
+func NewKeyManagement(controllerName string) *KeyManagement {
+	return &KeyManagement{ControllerName: controllerName}
 }

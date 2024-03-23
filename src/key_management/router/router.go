@@ -8,11 +8,13 @@ import (
 )
 
 func MakeRoute(e *echo.Echo) {
+	logger := e.Logger
 	controllers := []controller.Controller{
 		controller.KeyManagement{ControllerName: "key"},
 	}
 	for _, v := range controllers {
 		path := fmt.Sprintf("/manage/%s", v.GetControllerName())
+		logger.Debug(path)
 		e.POST(path, v.Create)
 		e.GET(path, v.Retrieve)
 		e.PUT(path, v.Update)

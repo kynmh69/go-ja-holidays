@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com" type="stylesheet"></script>
+    <title>API Key Manager</title>
+</head>
+
+<body>
+    <nav class="bg-gray-800 p-4">
+        <div class="container mx-auto">
+            <h1 class="text-white text-2xl font-bold">API Key Manager</h1>
+        </div>
+    </nav>
+
+    <div class="container mx-auto mt-8">
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="py-2 px-4 border">ID</th>
+                    <th class="py-2 px-4 border">API Key</th>
+                    <th class="py-2 px-4 border">作成日</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .apiKeys}}
+                <tr>
+                    <td class="py-2 px-4 border">{{.Id}}</td>
+                    <td class="py-2 px-4 border">{{.Key}}</td>
+                    <td class="py-2 px-4 border">{{.CreatedAt}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
