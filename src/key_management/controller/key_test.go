@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/kynmh69/go-ja-holidays/database"
+	"github.com/kynmh69/go-ja-holidays/key_management/template"
 	"github.com/kynmh69/go-ja-holidays/model"
 	"github.com/kynmh69/go-ja-holidays/util"
 	"github.com/labstack/echo/v4"
@@ -20,6 +21,7 @@ func TestMain(m *testing.M) {
 	res := m.Run()
 	os.Exit(res)
 }
+const VIEW_DIR = "../view/*.html"
 func TestKeyManagement_Retrieve(t *testing.T) {
 	e := echo.New()
 	util.EchoLoggerInitialize(e)
@@ -27,6 +29,9 @@ func TestKeyManagement_Retrieve(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	wd, _ := os.Getwd()
+	log.Println(wd)
+	e.Renderer = template.NewTemplate(VIEW_DIR)
 	type fields struct {
 		ControllerName string
 	}
@@ -65,10 +70,11 @@ func TestKeyManagement_Retrieve(t *testing.T) {
 func TestKeyManagement_Create(t *testing.T) {
 	e := echo.New()
 	util.EchoLoggerInitialize(e)
-	req := httptest.NewRequest(http.MethodPost, "/manage/key", nil)
+	req := httptest.NewRequest(http.MethodPost, "/manage/key/create", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	e.Renderer = template.NewTemplate(VIEW_DIR)
 	type fields struct {
 		ControllerName string
 	}
@@ -111,6 +117,7 @@ func TestKeyManagement_Update(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	e.Renderer = template.NewTemplate(VIEW_DIR)
 	type fields struct {
 		ControllerName string
 	}
@@ -149,6 +156,7 @@ func TestKeyManagement_Delete(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	e.Renderer = template.NewTemplate(VIEW_DIR)
 	type fields struct {
 		ControllerName string
 	}
