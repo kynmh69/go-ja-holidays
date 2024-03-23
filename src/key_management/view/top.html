@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main_output.css">
+    <title>API Key Manager</title>
+</head>
+
+<body>
+    <nav class="bg-gray-800 p-4">
+        <div class="container mx-auto">
+            <h1 class="text-white text-2xl font-bold">API Key Manager</h1>
+        </div>
+    </nav>
+
+    <!-- CreateButton -->
+    <div class="container mx-auto mt-8" id="create_form">
+        <div class="flex justify-end">
+            <form action="/manage/key/create" method="post">
+                <button class="px-4 py-2 font-semibold bg-blue-500 rounded drop-shadow text-white" type="submit">Create
+                    API
+                    Key</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="container mx-auto mt-8">
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="py-2 px-4 border">ID</th>
+                    <th class="py-2 px-4 border">API Key</th>
+                    <th class="py-2 px-4 border">作成日</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .}}
+                <tr>
+                    <td class="py-2 px-4 border">{{.Id}}</td>
+                    <td class="py-2 px-4 border">{{.Key}}</td>
+                    <td class="py-2 px-4 border">{{.CreatedAt}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
