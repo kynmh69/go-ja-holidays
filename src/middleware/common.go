@@ -8,8 +8,9 @@ import (
 func SetMiddleware(e *echo.Echo) {
 	e.Use(setLogger())
 	e.Use(mid.CORS())
+	// e.Use(mid.CSRF())
 	e.Use(SetPrometheus())
 	e.Use(mid.Recover())
 	e.Use(mid.RequestID())
-	e.Use(Redirect())
+	// e.Use(Redirect())
 }
