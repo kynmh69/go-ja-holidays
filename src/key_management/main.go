@@ -21,7 +21,7 @@ func main() {
 	e := echo.New()
 	util.EchoLoggerInitialize(e)
 	middleware.SetMiddleware(e)
-	e.Use(mid.Static("/view"))
+	e.Use(mid.Static("/static"))
 	logger := e.Logger
 
 	t := template.NewTemplate("view/*.html")
