@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/kynmh69/go-ja-holidays/api/middleware"
 	"github.com/kynmh69/go-ja-holidays/api/router"
 	"github.com/kynmh69/go-ja-holidays/database"
+	"github.com/kynmh69/go-ja-holidays/middleware"
 	"github.com/kynmh69/go-ja-holidays/util"
 	"github.com/labstack/echo/v4"
 )

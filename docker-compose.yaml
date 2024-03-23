@@ -40,6 +40,23 @@ services:
       - ./src:/go/app:rw
     ports:
       - 8080:80
+  
+  key_manager:
+    build:
+      context: .
+      dockerfile: ./docker/key_management/Dockerfile
+    environment:
+      - TZ=Asia/Tokyo
+      - LOG_LEVEL=debug
+    depends_on:
+      - database
+    networks:
+      - net-1
+    volumes:
+      - ./src:/go/app:rw
+    ports:
+      - 8081:80
+  
 
 volumes:
   psql_data:
