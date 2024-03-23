@@ -26,11 +26,11 @@ func (k KeyManagement) Retrieve(c echo.Context) error {
 }
 
 func (k KeyManagement) Create(c echo.Context) error {
-	apiKeys, err := model.CreateApiKey(c)
+	_, err := model.CreateApiKey(c)
 	if err != nil {
 		return util.ServerError(c, err)
 	}
-	return c.Render(http.StatusCreated, TOP_PAGE_NAME, apiKeys)
+	return c.Redirect(http.StatusTemporaryRedirect, "/manage/key")
 }
 
 func (k KeyManagement) Update(c echo.Context) error {

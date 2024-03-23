@@ -42,7 +42,6 @@ func CreateApiKey(c echo.Context) ([]ApiKey, error) {
 
 	id, _ := result.RowsAffected()
 	logger.Info("Create API Key.", id)
-	apiKeys, err = GetApiKeys()
 	return apiKeys, err
 }
 

@@ -15,7 +15,7 @@ func MakeRoute(e *echo.Echo) {
 	for _, v := range controllers {
 		path := fmt.Sprintf("/manage/%s", v.GetControllerName())
 		log.Println(path)
-		e.POST(path, v.Create)
+		e.POST(fmt.Sprintf("%s/create", path), v.Create)
 		e.GET(path, v.Retrieve)
 		e.PUT(path, v.Update)
 		e.DELETE(path, v.Delete)
