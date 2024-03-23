@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/main_output.css">
     <title>API Key Manager</title>
 </head>
 
@@ -17,10 +17,13 @@
 
     <!-- CreateButton -->
     <div class="container mx-auto mt-8" id="create_form">
-        <form action="/manage/key" method="post">
-            <button class="px-4 py-2 font-semibold bg-blue-500 rounded drop-shadow text-white" type="submit">Create API
-                Key</button>
-        </form>
+        <div class="flex justify-end">
+            <form action="/manage/key" method="post">
+                <button class="px-4 py-2 font-semibold bg-blue-500 rounded drop-shadow text-white" type="submit">Create
+                    API
+                    Key</button>
+            </form>
+        </div>
     </div>
 
     <!-- Table -->

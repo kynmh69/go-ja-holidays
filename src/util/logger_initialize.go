@@ -47,7 +47,7 @@ func EchoLoggerInitialize(e *echo.Echo) {
 	logger.SetPrefix("[APP]")
 	logger.SetLevel(GetLoggerLevel())
 	logger.SetOutput(InitWriter())
-	logger.SetHeader("${prefix} ${time_rfc3339_nano} [${level}] ${file} Line.${line} ")
+	logger.SetHeader("${prefix} ${time_rfc3339_nano} [${level}] ${path} Line.${line} ")
 }
 
 func InitWriter() io.Writer {

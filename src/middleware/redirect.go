@@ -9,6 +9,7 @@ import (
 func Redirect() echo.MiddlewareFunc {
 	registeredPaths := []string{
 		"/manage/key",
+		"/css",
 	}
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {

@@ -9,6 +9,7 @@ import (
 	"github.com/kynmh69/go-ja-holidays/middleware"
 	"github.com/kynmh69/go-ja-holidays/util"
 	"github.com/labstack/echo/v4"
+	mid "github.com/labstack/echo/v4/middleware"
 )
 
 func init() {
@@ -20,6 +21,7 @@ func main() {
 	e := echo.New()
 	util.EchoLoggerInitialize(e)
 	middleware.SetMiddleware(e)
+	e.Use(mid.Static("/view"))
 	logger := e.Logger
 
 	t := template.NewTemplate("view/*.html")
