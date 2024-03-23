@@ -9,6 +9,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+const TOP_PAGE_NAME = "top.html"
+
 type KeyManagement struct {
 	ControllerName string
 }
@@ -19,8 +21,8 @@ func (k KeyManagement) Retrieve(c echo.Context) error {
 	if err != nil {
 		return util.ServerError(c, err)
 	}
-	logger.Debug(apiKeys)
-	return c.Render(http.StatusOK, "top", apiKeys)
+	logger.Debug("APIKEYS", apiKeys)
+	return c.Render(http.StatusOK, TOP_PAGE_NAME, apiKeys)
 }
 
 func (k KeyManagement) Create(c echo.Context) error {
@@ -28,7 +30,7 @@ func (k KeyManagement) Create(c echo.Context) error {
 	if err != nil {
 		return util.ServerError(c, err)
 	}
-	return c.Render(http.StatusCreated, "top", apiKeys)
+	return c.Render(http.StatusCreated, TOP_PAGE_NAME, apiKeys)
 }
 
 func (k KeyManagement) Update(c echo.Context) error {
@@ -40,7 +42,7 @@ func (k KeyManagement) Delete(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.Render(http.StatusAccepted, "top", apikeys)
+	return c.Render(http.StatusAccepted, TOP_PAGE_NAME, apikeys)
 }
 
 func (k KeyManagement) GetControllerName() string {

@@ -12,6 +12,8 @@ type Template struct {
 }
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	logger := c.Logger()
+	logger.Debug(w, name, data)
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 

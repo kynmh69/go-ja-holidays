@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/kynmh69/go-ja-holidays/database"
 	"github.com/kynmh69/go-ja-holidays/key_management/router"
 	"github.com/kynmh69/go-ja-holidays/key_management/template"
@@ -22,7 +24,9 @@ func main() {
 
 	t := template.NewTemplate("view/*.html")
 	e.Renderer = t
+	e.HTTPErrorHandler = util.CustomHTTPErrorHandler
 	router.MakeRoute(e)
-
+	wd, _ := os.Getwd()
+	logger.Debug(wd)
 	logger.Fatal(e.Start(":80"))
 }

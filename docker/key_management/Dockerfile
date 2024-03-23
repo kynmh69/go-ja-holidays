@@ -5,6 +5,6 @@ WORKDIR /go/app
 RUN go install github.com/cosmtrek/air@latest
 
 RUN go mod download
-WORKDIR /go/app/api
+WORKDIR /go/app/key_management
 
 CMD [ "air", "-c", ".air.toml"]
