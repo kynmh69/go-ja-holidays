@@ -14,10 +14,12 @@ type KeyManagement struct {
 }
 
 func (k KeyManagement) Retrieve(c echo.Context) error {
-	_, err := model.GetApiKeys()
+	logger := c.Logger()
+	apiKeys, err := model.GetApiKeys()
 	if err != nil {
 		return util.ServerError(c, err)
 	}
+	logger.Debug(apiKeys)
 	return c.HTML(http.StatusOK, "")
 }
 

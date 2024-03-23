@@ -10,12 +10,12 @@ import (
 )
 
 const TABLE_API_KEY = "api_key"
-const COLUMN_KEY = "key"
+const COLUMN_KEY = "api_key"
 const COLUMN_CREATED_AT = "created_at"
 
 type ApiKey struct {
 	Id        string    `db:"id" goqu:"skipinsert"`
-	Key       string    `db:"key"`
+	Key       string    `db:"api_key"`
 	CreatedAt time.Time `db:"created_at" goqu:"skipinsert"`
 }
 
@@ -49,7 +49,13 @@ func CreateApiKey(c echo.Context) ([]ApiKey, error) {
 func DeleteApiKey(c echo.Context) ([]ApiKey, error) {
 	logger := c.Logger()
 	db := database.GetDbConnection()
-
+	defaultLocation := time.Local
+	logger.Debug(defaultLocation)
+	loc, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		return nil, err
+	}
+	time.Local = loc
 	anHourAgo := time.Now().Add(-1 * time.Hour)
 
 	result, err := db.Delete(TABLE_API_KEY).Where(
