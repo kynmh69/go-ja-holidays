@@ -30,7 +30,7 @@ func (k KeyManagement) Create(c echo.Context) error {
 	if err != nil {
 		return util.ServerError(c, err)
 	}
-	return c.Redirect(http.StatusTemporaryRedirect, "/manage/key")
+	return c.Redirect(http.StatusFound, "/manage/key")
 }
 
 func (k KeyManagement) Update(c echo.Context) error {
@@ -42,7 +42,7 @@ func (k KeyManagement) Delete(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.Render(http.StatusAccepted, TOP_PAGE_NAME, apikeys)
+	return c.Render(http.StatusFound, TOP_PAGE_NAME, apikeys)
 }
 
 func (k KeyManagement) GetControllerName() string {
