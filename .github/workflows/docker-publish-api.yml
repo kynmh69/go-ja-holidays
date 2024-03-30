@@ -223,7 +223,7 @@ jobs:
   deploy:
     permissions:
       id-token: write
-    needs: test-updater
+    needs: test-api
     name: Deploy to ECR
     runs-on: ubuntu-latest
     environment: production
