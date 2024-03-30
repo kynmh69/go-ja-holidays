@@ -24,6 +24,7 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   UPDATER_DIR: "src/updater"
+  DOCKER_FILE: "docker/updater"
   AWS_REGION: us-west-2
   ECR_REPOSITORY: "go-ja-holidays-updater"
   ECS_SERVICE: holidays-updater-service
@@ -233,6 +234,7 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
+      working-directory: ${{ env.DOCKER_FILE }}
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
