@@ -12,12 +12,10 @@ func ServerError(c echo.Context, err error) error {
 }
 
 func CustomHTTPErrorHandler(err error, c echo.Context) {
-	logger := c.Logger()
 	code := http.StatusInternalServerError
 	if he, ok := err.(*echo.HTTPError); ok {
 		code = he.Code
 	}
-	logger.Error("Error: ", code)
 	c.Logger().Error(err)
 	errorPage := fmt.Sprintf("view/error/%d.html", code)
 	if err := c.File(errorPage); err != nil {

@@ -18,6 +18,6 @@ func MakeRoute(e *echo.Echo) {
 		e.POST(fmt.Sprintf("%s/create", path), v.Create)
 		e.GET(path, v.Retrieve)
 		e.PUT(path, v.Update)
-		e.DELETE(path, v.Delete)
+		e.POST(fmt.Sprintf("%s/delete", path), v.Delete)
 	}
 }

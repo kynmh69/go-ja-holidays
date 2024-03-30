@@ -9,7 +9,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-const TOP_PAGE_NAME = "top.html"
+const (
+	TOP_PAGE_NAME = "top.html"
+	TOP_PATH      = "/manage/key"
+)
 
 type KeyManagement struct {
 	ControllerName string
@@ -26,11 +29,11 @@ func (k KeyManagement) Retrieve(c echo.Context) error {
 }
 
 func (k KeyManagement) Create(c echo.Context) error {
-	_, err := model.CreateApiKey(c)
+	err := model.CreateApiKey(c)
 	if err != nil {
 		return util.ServerError(c, err)
 	}
-	return c.Redirect(http.StatusFound, "/manage/key")
+	return c.Redirect(http.StatusFound, TOP_PATH)
 }
 
 func (k KeyManagement) Update(c echo.Context) error {
@@ -38,11 +41,11 @@ func (k KeyManagement) Update(c echo.Context) error {
 }
 
 func (k KeyManagement) Delete(c echo.Context) error {
-	apikeys, err := model.DeleteApiKey(c)
+	err := model.DeleteApiKey(c)
 	if err != nil {
 		return err
 	}
-	return c.Render(http.StatusFound, TOP_PAGE_NAME, apikeys)
+	return c.Redirect(http.StatusFound, TOP_PATH)
 }
 
 func (k KeyManagement) GetControllerName() string {

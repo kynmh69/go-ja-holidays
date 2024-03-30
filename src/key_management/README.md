@@ -13,5 +13,5 @@ npm install -D tailwindcss postcss autoprefixer
 2. コンパイルをする
 
 ```bash
-npx tailwindcss -i ./static/css/main.css -o ./static/css/main_output.css --watch
+npx tailwindcss -i ./static/css/main.css -o ./static/css/main_output.css
 ```

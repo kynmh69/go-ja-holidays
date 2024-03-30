@@ -26,8 +26,7 @@ func GetApiKeys() ([]ApiKey, error) {
 	return apiKeys, err
 }
 
-func CreateApiKey(c echo.Context) ([]ApiKey, error) {
-	var apiKeys []ApiKey
+func CreateApiKey(c echo.Context) error {
 	logger := c.Logger()
 	key := uuid.New()
 	db := database.GetDbConnection()
@@ -37,22 +36,22 @@ func CreateApiKey(c echo.Context) ([]ApiKey, error) {
 		).
 		Executor().Exec()
 	if err != nil {
-		return apiKeys, err
+		return err
 	}
 
 	id, _ := result.RowsAffected()
 	logger.Info("Create API Key.", id)
-	return apiKeys, err
+	return err
 }
 
-func DeleteApiKey(c echo.Context) ([]ApiKey, error) {
+func DeleteApiKey(c echo.Context) error {
 	logger := c.Logger()
 	db := database.GetDbConnection()
 	defaultLocation := time.Local
 	logger.Debug(defaultLocation)
 	loc, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	time.Local = loc
 	anHourAgo := time.Now().Add(-1 * time.Hour)
@@ -62,10 +61,9 @@ func DeleteApiKey(c echo.Context) ([]ApiKey, error) {
 	).Executor().Exec()
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 	row, _ := result.RowsAffected()
 	logger.Debug("Row affected", row)
-	apiKeys, err := GetApiKeys()
-	return apiKeys, err
+	return err
 }

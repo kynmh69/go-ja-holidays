@@ -14,44 +14,56 @@
             <h1 class="text-white text-2xl font-bold">API Key Manager</h1>
         </div>
     </nav>
-
-    <!-- CreateButton -->
-    <div class="container mx-auto mt-8" id="create_form">
-        <div class="flex justify-end">
-            <form action="/manage/key/create" method="post">
-                <button class="px-4 py-2 font-semibold bg-blue-500 rounded drop-shadow text-white" type="submit">Create
-                    API
-                    Key</button>
-            </form>
+    <main>
+        <div class="container mx-auto mt-8">
+            <!-- delete button -->
+            <div class="flex">
+                <div class="basis-1/2">
+                    <form action="/manage/key/delete" method="post">
+                        <button class="px-4 py-2 font-semibold bg-red-400 rounded drop-shadow text-white" type="submit">
+                            Delete expired key
+                        </button>
+                    </form>
+                </div>
+                <!-- CreateButton -->
+                <div class="justify-self-end">
+                    <form action="/manage/key/create" method="post">
+                        <button class="px-4 py-2 font-semibold bg-blue-500 rounded drop-shadow text-white"
+                            type="submit">Create
+                            API
+                            Key</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Table -->
-    <div class="container mx-auto my-8">
-        <table class="w-full border-collapse">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="py-2 px-4 border">ID</th>
-                    <th class="py-2 px-4 border">API Key</th>
-                    <th class="py-2 px-4 border">作成日</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{range .}}
-                <tr>
-                    <td class="py-2 px-4 border">{{.Id}}</td>
-                    <td class="py-2 px-4 border">{{.Key}}</td>
-                    <td class="py-2 px-4 border">{{.CreatedAt}}</td>
-                </tr>
-                {{end}}
-            </tbody>
-        </table>
-    </div>
+        <!-- Table -->
+        <div class="container mx-auto my-8">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="py-2 px-4 border">ID</th>
+                        <th class="py-2 px-4 border">API Key</th>
+                        <th class="py-2 px-4 border">作成日</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .}}
+                    <tr>
+                        <td class="py-2 px-4 border">{{.Id}}</td>
+                        <td class="py-2 px-4 border">{{.Key}}</td>
+                        <td class="py-2 px-4 border">{{.CreatedAt}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    </main>
 
     <!-- フッター -->
     <footer class="bg-gray-800 p-4">
         <div class="container mx-auto text-center text-white">
-            <p>&copy; kynmh69 Inc. All rights reserved.</p>
+            <p>&copy; kynmh69 All rights reserved.</p>
         </div>
     </footer>
 </body>
