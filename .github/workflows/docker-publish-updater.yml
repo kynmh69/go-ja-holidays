@@ -31,8 +31,6 @@ env:
   ECS_TASK_DEFINITION: .aws/updater_task.json
   CONTAINER_NAME: MY_CONTAINER_NAME
 
-
-
 jobs:
   analyze:
     name: Analyze
@@ -212,6 +210,8 @@ jobs:
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
   deploy:
+    permissions:
+      id-token: write
     needs: test-updater
     name: Deploy to ECR
     runs-on: ubuntu-latest
