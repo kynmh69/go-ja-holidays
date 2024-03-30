@@ -126,7 +126,7 @@ jobs:
         MODE: atomic
       run: go test -v ./...
 
-  publish-api:
+  publish-key-manager:
     needs: test-key-manager
     runs-on: ubuntu-latest
     permissions:
