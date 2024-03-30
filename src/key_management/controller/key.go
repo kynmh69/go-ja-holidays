@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/kynmh69/go-ja-holidays/model"
-	"github.com/kynmh69/go-ja-holidays/util"
 	"github.com/labstack/echo/v4"
 )
 
@@ -20,19 +19,13 @@ type KeyManagement struct {
 
 func (k KeyManagement) Retrieve(c echo.Context) error {
 	logger := c.Logger()
-	apiKeys, err := model.GetApiKeys()
-	if err != nil {
-		return util.ServerError(c, err)
-	}
+	apiKeys, _ := model.GetApiKeys()
 	logger.Debug("APIKEYS", apiKeys)
 	return c.Render(http.StatusOK, TOP_PAGE_NAME, apiKeys)
 }
 
 func (k KeyManagement) Create(c echo.Context) error {
-	err := model.CreateApiKey(c)
-	if err != nil {
-		return util.ServerError(c, err)
-	}
+	model.CreateApiKey(c)
 	return c.Redirect(http.StatusFound, TOP_PATH)
 }
 
@@ -41,10 +34,7 @@ func (k KeyManagement) Update(c echo.Context) error {
 }
 
 func (k KeyManagement) Delete(c echo.Context) error {
-	err := model.DeleteApiKey(c)
-	if err != nil {
-		return err
-	}
+	model.DeleteApiKey(c)
 	return c.Redirect(http.StatusFound, TOP_PATH)
 }
 
