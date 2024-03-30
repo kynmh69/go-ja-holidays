@@ -5,9 +5,15 @@ on:
       - main
     tags:
       - 'v*.*.*'
+    paths:
+      - '.github/workflows/codecov.yml'
+      - 'src/**'
   pull_request:
     branches:
       - main
+    paths:
+      - '.github/workflows/codecov.yml'
+      - 'src/**'
 env:
   UPDATER_DIR: "src/updater"
   API_DIR: "src/api"
