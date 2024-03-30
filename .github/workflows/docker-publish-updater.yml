@@ -31,7 +31,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   UPDATER_DIR: "src/updater"
   DOCKER_FILE: "docker/updater"
-  AWS_REGION: us-west-2
+  AWS_REGION: us-east-1
   ECR_REPOSITORY: "go-ja-holidays-updater"
   ECS_SERVICE: holidays-updater-service
   ECS_CLUSTER: holidays-cluster
