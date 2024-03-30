@@ -124,7 +124,7 @@ jobs:
       run: go test -v ./...
 
   publish-updater:
-
+    needs: test-updater
     runs-on: ubuntu-latest
     permissions:
       contents: read
