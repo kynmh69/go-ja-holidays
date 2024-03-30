@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
 	"testing"
 
 	"github.com/google/uuid"
@@ -21,7 +22,9 @@ func TestMain(m *testing.M) {
 	res := m.Run()
 	os.Exit(res)
 }
+
 const VIEW_DIR = "../view/*.html"
+
 func TestKeyManagement_Retrieve(t *testing.T) {
 	e := echo.New()
 	util.EchoLoggerInitialize(e)
@@ -246,4 +249,31 @@ func tearDown() {
 		log.Fatalln(err)
 	}
 	log.Println("Teardown.")
+}
+
+func TestNewKeyManagement(t *testing.T) {
+	name := "test controller"
+	type args struct {
+		controllerName string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *KeyManagement
+	}{
+		{
+			name: "test ok",
+			args: args{
+				controllerName: name,
+			},
+			want: &KeyManagement{ControllerName: name},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewKeyManagement(tt.args.controllerName); !reflect.DeepEqual(got.ControllerName, tt.want.ControllerName) {
+				t.Errorf("NewKeyManagement() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
