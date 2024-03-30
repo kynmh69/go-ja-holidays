@@ -55,7 +55,7 @@ func DeleteApiKey(c echo.Context) error {
 	}
 	time.Local = loc
 	anHourAgo := time.Now().Add(-1 * time.Hour)
-
+	logger.Debug("an hour ago: ", anHourAgo)
 	result, err := db.Delete(TABLE_API_KEY).Where(
 		goqu.C(COLUMN_CREATED_AT).Lt(anHourAgo),
 	).Executor().Exec()
