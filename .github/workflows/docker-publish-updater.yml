@@ -15,7 +15,7 @@ on:
       - 'src/middleware/**'
       - 'src/model/**'
       - 'src/util/**'
-      - '.github/workflows/**'
+      - '.github/workflows/docker-publish-updater.yml'
   pull_request:
     branches: [ "main" ]
     paths:
@@ -23,7 +23,7 @@ on:
       - 'src/middleware/**'
       - 'src/model/**'
       - 'src/util/**'
-      - '.github/workflows/**'
+      - '.github/workflows/docker-publish-updater.yml'
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
@@ -247,7 +247,8 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./docker/updater/Dockerfile
+        ls -l
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG docker/updater/Dockerfile
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 

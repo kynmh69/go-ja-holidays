@@ -15,7 +15,7 @@ on:
       - 'src/middleware/**'
       - 'src/model/**'
       - 'src/util/**'
-      - '.github/workflows/**'
+      - '.github/workflows/docker-publish-key-manager.yml'
   pull_request:
     branches: [ "main" ]
     paths:
@@ -23,7 +23,7 @@ on:
       - 'src/middleware/**'
       - 'src/model/**'
       - 'src/util/**'
-      - '.github/workflows/**'
+      - '.github/workflows/docker-publish-key-manager.yml'
 
 env:
   # Use docker.io for Docker Hub if empty
