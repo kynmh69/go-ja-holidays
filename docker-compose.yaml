@@ -47,7 +47,7 @@ services:
       dockerfile: ./docker/key_management/Dockerfile
     environment:
       - TZ=Asia/Tokyo
-      - LOG_LEVEL=debug
+      - LOG_LEVEL=info
     depends_on:
       - database
     networks:
