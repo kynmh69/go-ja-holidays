@@ -22,7 +22,7 @@ type ApiKey struct {
 func GetApiKeys() ([]ApiKey, error) {
 	var apiKeys []ApiKey
 	db := database.GetDbConnection()
-	err := db.From(TABLE_API_KEY).ScanStructs(&apiKeys)
+	err := db.From(TABLE_API_KEY).Order(goqu.C(COLUMN_CREATED_AT).Asc()).ScanStructs(&apiKeys)
 	return apiKeys, err
 }
 

@@ -17,7 +17,7 @@
     <main>
         <div class="container mx-auto mt-8">
             <!-- delete button -->
-            <div class="flex">
+            <div class="flex place-content-between">
                 <div class="basis-1/2">
                     <form action="/manage/key/delete" method="post">
                         <button class="px-4 py-2 font-semibold bg-red-400 rounded drop-shadow text-white" type="submit">
@@ -39,7 +39,7 @@
 
         <!-- Table -->
         <div class="container mx-auto my-8">
-            <table class="w-full border-collapse">
+            <table class="w-full hover:border-collapse">
                 <thead>
                     <tr class="bg-gray-200">
                         <th class="py-2 px-4 border">ID</th>
@@ -52,7 +52,8 @@
                     <tr>
                         <td class="py-2 px-4 border">{{.Id}}</td>
                         <td class="py-2 px-4 border">{{.Key}}</td>
-                        <td class="py-2 px-4 border">{{.CreatedAt}}</td>
+                        <td class="py-2 px-4 border">{{.CreatedAt.Format "2006年01月02日 15時04分05秒"}}
+                        </td>
                     </tr>
                     {{end}}
                 </tbody>
