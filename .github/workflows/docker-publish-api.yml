@@ -37,6 +37,7 @@ env:
   ECS_CLUSTER: holidays-cluster
   ECS_TASK_DEFINITION: .aws/api_task.json
   CONTAINER_NAME: MY_CONTAINER_NAME
+  PLATFORM: "linux/amd64,linux/arm64,linux/x86_64"
 
 
 jobs:
@@ -232,6 +233,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    # Set up BuildKit Docker container builder to be able to build
+    # multi-platform images and export cache
+    # https://github.com/docker/setup-buildx-action
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3 # v3.1.0
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -245,18 +252,28 @@ jobs:
         mask-password: 'true'
         registry-type: public
 
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f docker/api/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+    # Extract metadata (tags, labels) for Docker
+    # https://github.com/docker/metadata-action
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@v5 # v5.0.0
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api
+
+    # Build and push Docker image with Buildx (don't push on PR)
+    # https://github.com/docker/build-push-action
+    - name: Build and push Docker image
+      id: build-and-push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: docker/updater/Dockerfile
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: ${{ env.PLATFORM }}
 
     # - name: Fill in the new image ID in the Amazon ECS task definition
     #   id: task-def
@@ -264,7 +281,7 @@ jobs:
     #   with:
     #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
     #     container-name: ${{ env.CONTAINER_NAME }}
-    #     image: ${{ steps.build-image.outputs.image }}
+    #     image: ${{ steps.build-and-push.outputs.image }}
 
     # - name: Deploy Amazon ECS task definition
     #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
