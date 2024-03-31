@@ -30,13 +30,13 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   UPDATER_DIR: "src/updater"
-  DOCKER_FILE: "docker/updater"
   AWS_REGION: us-east-1
   ECS_SERVICE: holidays-updater-service
   ECS_CLUSTER: holidays-cluster
   ECS_TASK_DEFINITION: .aws/updater_task.json
   CONTAINER_NAME: holidays-updater
   PLATFORM: "linux/amd64,linux/arm64,linux/x86_64"
+  DOCKER_FILEPATH: "docker/updater/Dockerfile"
 
 jobs:
   analyze:
@@ -193,7 +193,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/updater/Dockerfile
+          file: ${{ env.DOCKER_FILEPATH }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -262,7 +262,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        file: docker/updater/Dockerfile
+        file: ${{ env.DOCKER_FILEPATH }}
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}

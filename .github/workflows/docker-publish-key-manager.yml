@@ -35,8 +35,9 @@ env:
   ECS_SERVICE: holidays-key-manager-service
   ECS_CLUSTER: holidays-cluster
   ECS_TASK_DEFINITION: .aws/key_manager_task.json
-  CONTAINER_NAME: MY_CONTAINER_NAME
+  CONTAINER_NAME: holidays-key-manager
   PLATFORM: "linux/amd64,linux/arm64,linux/x86_64"
+  DOCKER_FILEPATH: "docker/key_management/Dockerfile"
 
 
 jobs:
@@ -197,7 +198,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/api/Dockerfile
+          file: ${{ env.DOCKER_FILEPATH }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -266,7 +267,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        file: docker/updater/Dockerfile
+        file: ${{ env.DOCKER_FILEPATH }}
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}

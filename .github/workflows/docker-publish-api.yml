@@ -32,12 +32,12 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   API_DIR: "src/api"
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: "j9l1s4z2/go-ja-holidays-api"
   ECS_SERVICE: holidays-api-service
   ECS_CLUSTER: holidays-cluster
   ECS_TASK_DEFINITION: .aws/api_task.json
-  CONTAINER_NAME: MY_CONTAINER_NAME
+  CONTAINER_NAME: holidays-api
   PLATFORM: "linux/amd64,linux/arm64,linux/x86_64"
+  DOCKER_FILEPATH: "docker/api/Dockerfile"
 
 
 jobs:
@@ -198,7 +198,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/api/Dockerfile
+          file: ${{ env.DOCKER_FILEPATH }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -267,7 +267,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        file: docker/updater/Dockerfile
+        file: ${{ env.DOCKER_FILEPATH }}
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
