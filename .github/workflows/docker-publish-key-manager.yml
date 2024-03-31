@@ -258,7 +258,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5 # v5.0.0
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-key-manager
+        images: ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}-key-manager
 
     # Build and push Docker image with Buildx (don't push on PR)
     # https://github.com/docker/build-push-action
