@@ -26,6 +26,13 @@ func GetApiKeys() ([]ApiKey, error) {
 	return apiKeys, err
 }
 
+func GetApiKey(key string) (ApiKey, error) {
+	var apiKey ApiKey
+	db := database.GetDbConnection()
+	_, err := db.From(TABLE_API_KEY).Where(goqu.C(COLUMN_KEY).Eq(key)).ScanStruct(&apiKey)
+	return apiKey, err
+}
+
 func CreateApiKey(c echo.Context) error {
 	logger := c.Logger()
 	key := uuid.New()

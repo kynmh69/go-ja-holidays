@@ -13,4 +13,5 @@ func SetMiddleware(e *echo.Echo) {
 	e.Use(mid.Recover())
 	e.Use(mid.RequestID())
 	// e.Use(Redirect())
+	e.Use(Auth())
 }
