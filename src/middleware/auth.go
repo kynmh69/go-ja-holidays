@@ -12,8 +12,10 @@ func Auth() echo.MiddlewareFunc {
 		Validator: func(auth string, c echo.Context) (bool, error) {
 			apiKey, err := model.GetApiKey(auth)
 			if err != nil {
+				// エラーの場合
 				return false, err
 			}
+			// 認証結果を返す
 			return auth == apiKey.Key, nil
 		},
 	})
