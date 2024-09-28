@@ -1,12 +1,13 @@
 package model
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"time"
 
 	"github.com/doug-martin/goqu/v9"
 	"github.com/google/uuid"
 	"github.com/kynmh69/go-ja-holidays/database"
-	"github.com/labstack/echo/v4"
 )
 
 const TABLE_API_KEY = "api_key"
@@ -26,8 +27,8 @@ func GetApiKeys() ([]ApiKey, error) {
 	return apiKeys, err
 }
 
-func CreateApiKey(c echo.Context) error {
-	logger := c.Logger()
+func CreateApiKey(c *gin.Context) error {
+	logger := logging.GetLogger()
 	key := uuid.New()
 	db := database.GetDbConnection()
 	result, err := db.Insert(TABLE_API_KEY).
@@ -44,8 +45,8 @@ func CreateApiKey(c echo.Context) error {
 	return err
 }
 
-func DeleteApiKey(c echo.Context) error {
-	logger := c.Logger()
+func DeleteApiKey(c *gin.Context) error {
+	logger := logging.GetLogger()
 	db := database.GetDbConnection()
 	defaultLocation := time.Local
 	logger.Debug(defaultLocation)

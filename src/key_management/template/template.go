@@ -1,22 +1,22 @@
 package template
 
 import (
-	"html/template"
-	"io"
-
-	"github.com/labstack/echo/v4"
+	"github.com/gin-contrib/multitemplate"
+	"github.com/kynmh69/go-ja-holidays/logging"
+	"path/filepath"
 )
 
-type Template struct {
-	templates *template.Template
-}
+func Render(templateGlob string) multitemplate.Renderer {
+	logger := logging.GetLogger()
+	logger.Debug("Glob:", templateGlob)
+	r := multitemplate.NewRenderer()
 
-func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	logger := c.Logger()
-	logger.Debug(w, name, data)
-	return t.templates.ExecuteTemplate(w, name, data)
-}
+	layouts, err := filepath.Glob(templateGlob)
+	if err != nil {
+		logger.Panicln(err.Error())
+	}
 
-func NewTemplate(path string) *Template {
-	return &Template{templates: template.Must(template.ParseGlob(path))}
+	// Generate our templates map from our layouts/ and includes/ directories
+	r.AddFromFiles("view", layouts...)
+	return r
 }
