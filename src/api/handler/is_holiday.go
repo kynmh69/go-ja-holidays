@@ -13,7 +13,7 @@ import (
 )
 
 type HolidayRequest struct {
-	holiday *time.Time `query:"day" binding:"date"`
+	holiday *time.Time `uri:"day" binding:"datetime"`
 }
 
 func IsHoliday(c *gin.Context) {
@@ -25,7 +25,7 @@ func IsHoliday(c *gin.Context) {
 
 	logger := logging.GetLogger()
 
-	if err := c.BindQuery(&request); err != nil {
+	if err := c.ShouldBindUri(&request); err != nil {
 		logger.Error(err)
 		BadRequestJson(c, err.Error())
 		return
