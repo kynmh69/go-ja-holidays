@@ -20,7 +20,7 @@ type KeyManagement struct {
 func (k KeyManagement) Retrieve(c *gin.Context) {
 	logger := logging.GetLogger()
 	apiKeys, _ := model.GetApiKeys()
-	logger.Debug("APIKEYS", apiKeys)
+	logger.Debug("APIKEY", apiKeys)
 	c.HTML(http.StatusOK, TopPageName, apiKeys)
 }
 
