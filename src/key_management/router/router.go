@@ -3,9 +3,8 @@ package router
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
-
 	"github.com/kynmh69/go-ja-holidays/key_management/controller"
+	"github.com/kynmh69/go-ja-holidays/logging"
 )
 
 func MakeRoute(r *gin.Engine) {
@@ -14,7 +13,7 @@ func MakeRoute(r *gin.Engine) {
 	}
 	for _, v := range controllers {
 		path := fmt.Sprintf("/manage/%s", v.GetControllerName())
-		log.Println(path)
+		logging.GetLogger().Debugln(path)
 		r.POST(fmt.Sprintf("%s/create", path), v.Create)
 		r.GET(path, v.Retrieve)
 		r.PUT(path, v.Update)

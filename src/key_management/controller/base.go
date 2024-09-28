@@ -5,9 +5,9 @@ import (
 )
 
 type Controller interface {
-	Retrieve(r *gin.Context) error
-	Create(r *gin.Context) error
-	Update(r *gin.Context) error
-	Delete(r *gin.Context) error
+	Retrieve(r *gin.Context)
+	Create(r *gin.Context)
+	Update(r *gin.Context)
+	Delete(r *gin.Context)
 	GetControllerName() string
 }
