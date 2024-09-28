@@ -25,5 +25,5 @@ func main() {
 	router.MakeRoute(r)
 	wd, _ := os.Getwd()
 	logger.Debug(wd)
-	logger.Fatal(e.Start(":80"))
+	logger.Fatal(r.Run(":8080"))
 }
