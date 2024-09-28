@@ -7,6 +7,6 @@ import (
 
 func MakeRoute(r *gin.Engine) {
 	r.GET("/holidays", handler.GetHolidays)
-	r.GET("/holidays/:day", handler.IsHoliday)
+	r.GET("/holidays/:date", handler.IsHoliday)
 	r.GET("/holidays/count", handler.CountHolidays)
 }

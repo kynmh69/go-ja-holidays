@@ -13,7 +13,7 @@ import (
 )
 
 type HolidayRequest struct {
-	holiday time.Time `uri:"day" time_format:"2006-01-02" time_utc:"false"`
+	Date time.Time `uri:"date" time_format:"2006-01-02" time_utc:"false"`
 }
 
 func IsHoliday(c *gin.Context) {
@@ -30,15 +30,15 @@ func IsHoliday(c *gin.Context) {
 		BadRequestJson(c, err.Error())
 		return
 	}
-	logger.Debug(request.holiday)
+	logger.Debug(request.Date)
 
 	// Set the time zone to JST.
-	loc := request.holiday.Location()
+	loc := request.Date.Location()
 	goqu.SetTimeLocation(loc)
 
 	// Get the holiday data for the specified day.
 	dataSet := db.From(TableHolidaysJp).
-		Where(goqu.C(ColumnDate).Eq(request.holiday))
+		Where(goqu.C(ColumnDate).Eq(request.Date))
 	ok, err := dataSet.ScanStruct(&holiday)
 
 	if err != nil {
@@ -51,7 +51,7 @@ func IsHoliday(c *gin.Context) {
 	if ok {
 		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: holiday}
 	} else {
-		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: request.holiday}}
+		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: request.Date}}
 	}
 	logger.Debug(isHoliday)
 	c.JSON(http.StatusOK, isHoliday)
