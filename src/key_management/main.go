@@ -1,26 +1,24 @@
 package main
 
 import (
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"os"
 
 	"github.com/kynmh69/go-ja-holidays/database"
 	"github.com/kynmh69/go-ja-holidays/key_management/router"
 	"github.com/kynmh69/go-ja-holidays/key_management/template"
-	"github.com/kynmh69/go-ja-holidays/middleware"
 	"github.com/kynmh69/go-ja-holidays/util"
 	"github.com/labstack/echo/v4"
 	mid "github.com/labstack/echo/v4/middleware"
 )
 
 func init() {
-	util.LoggerInitialize()
+	logging.LoggerInitialize()
 	database.ConnectDatabase()
 }
 
 func main() {
 	e := echo.New()
-	util.EchoLoggerInitialize(e)
-	middleware.SetMiddleware(e)
 	e.Use(mid.Static("./static"))
 	logger := e.Logger
 

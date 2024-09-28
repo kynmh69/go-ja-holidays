@@ -2,12 +2,13 @@ package main
 
 import (
 	"github.com/kynmh69/go-ja-holidays/database"
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"github.com/kynmh69/go-ja-holidays/updater/controller"
 	"github.com/kynmh69/go-ja-holidays/util"
 )
 
 func init() {
-	util.LoggerInitialize()
+	logging.LoggerInitialize()
 	database.ConnectDatabase()
 }
 

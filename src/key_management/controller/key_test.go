@@ -252,7 +252,7 @@ func tearDown() {
 }
 
 func TestNewKeyManagement(t *testing.T) {
-	name := "test controller"
+	name := "test handler"
 	type args struct {
 		controllerName string
 	}

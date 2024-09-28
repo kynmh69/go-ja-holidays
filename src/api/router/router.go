@@ -1,17 +1,12 @@
 package router
 
 import (
-	"github.com/kynmh69/go-ja-holidays/api/controller"
-	"github.com/labstack/echo-contrib/echoprometheus"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
+	"github.com/kynmh69/go-ja-holidays/api/handler"
 )
 
-func MakeRoute(e *echo.Echo) {
-	e.GET("/holidays", controller.GetHolidays)
-	e.GET("/holidays/:day", controller.IsHoliday)
-	e.GET("/holidays/count", controller.CountHolidays)
-}
-
-func SetPrometheusHandler(e *echo.Echo) {
-	e.GET("/metrics", echoprometheus.NewHandler())
+func MakeRoute(r *gin.Engine) {
+	r.GET("/holidays", handler.GetHolidays)
+	r.GET("/holidays/:day", handler.IsHoliday)
+	r.GET("/holidays/count", handler.CountHolidays)
 }
