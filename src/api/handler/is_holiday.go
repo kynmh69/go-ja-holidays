@@ -13,7 +13,7 @@ import (
 )
 
 type HolidayRequest struct {
-	holiday *time.Time `uri:"day" binding:"datetime"`
+	holiday time.Time `uri:"day" time_format:"2006-01-02" time_utc:"false"`
 }
 
 func IsHoliday(c *gin.Context) {
@@ -51,7 +51,7 @@ func IsHoliday(c *gin.Context) {
 	if ok {
 		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: holiday}
 	} else {
-		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: *request.holiday}}
+		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: request.holiday}}
 	}
 	logger.Debug(isHoliday)
 	c.JSON(http.StatusOK, isHoliday)
