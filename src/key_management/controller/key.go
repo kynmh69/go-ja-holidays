@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	TOP_PAGE_NAME = "top.html"
-	TOP_PATH      = "/manage/key"
+	TopPageName = "top.html"
+	TopPath     = "/manage/key"
 )
 
 type KeyManagement struct {
@@ -21,16 +21,16 @@ func (k KeyManagement) Retrieve(c *gin.Context) {
 	logger := logging.GetLogger()
 	apiKeys, _ := model.GetApiKeys()
 	logger.Debug("APIKEYS", apiKeys)
-	c.HTML(http.StatusOK, TOP_PAGE_NAME, apiKeys)
+	c.HTML(http.StatusOK, TopPageName, apiKeys)
 }
 
 func (k KeyManagement) Create(c *gin.Context) {
-	err := model.CreateApiKey(c)
+	err := model.CreateApiKey()
 	if err != nil {
 		c.HTML(500, "error", gin.H{"error": err.Error()})
 		return
 	}
-	c.Redirect(http.StatusFound, TOP_PATH)
+	c.Redirect(http.StatusFound, TopPath)
 }
 
 func (k KeyManagement) Update(c *gin.Context) {
@@ -38,12 +38,12 @@ func (k KeyManagement) Update(c *gin.Context) {
 }
 
 func (k KeyManagement) Delete(c *gin.Context) {
-	err := model.DeleteApiKey(c)
+	err := model.DeleteApiKey()
 	if err != nil {
 		c.HTML(500, "error", gin.H{"error": err.Error()})
 		return
 	}
-	c.Redirect(http.StatusFound, TOP_PATH)
+	c.Redirect(http.StatusFound, TopPath)
 }
 
 func (k KeyManagement) GetControllerName() string {

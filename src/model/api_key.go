@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/kynmh69/go-ja-holidays/logging"
 	"time"
 
@@ -27,7 +26,7 @@ func GetApiKeys() ([]ApiKey, error) {
 	return apiKeys, err
 }
 
-func CreateApiKey(c *gin.Context) error {
+func CreateApiKey() error {
 	logger := logging.GetLogger()
 	key := uuid.New()
 	db := database.GetDbConnection()
@@ -45,7 +44,7 @@ func CreateApiKey(c *gin.Context) error {
 	return err
 }
 
-func DeleteApiKey(c *gin.Context) error {
+func DeleteApiKey() error {
 	logger := logging.GetLogger()
 	db := database.GetDbConnection()
 	defaultLocation := time.Local
