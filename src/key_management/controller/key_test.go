@@ -27,7 +27,7 @@ const VIEW_DIR = "../view/*.html"
 
 func TestKeyManagement_Retrieve(t *testing.T) {
 	e := echo.New()
-	util.EchoLoggerInitialize(e)
+	util.SetUp()
 	req := httptest.NewRequest(http.MethodGet, "/manage/key", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
