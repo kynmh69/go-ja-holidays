@@ -29,20 +29,20 @@ func CountHolidays(c *gin.Context) {
 		BadRequestJson(c, err.Error())
 		return
 	}
-
+	logger.Debug("request:", request)
 	db := database.GetDbConnection()
 
 	dataSet := db.From(TableHolidaysJp)
-	if request.StartDay != "" && request.EndDay != "" {
+	if !request.StartDay.IsZero() && !request.EndDay.IsZero() {
 		dataSet = dataSet.Where(
 			goqu.C(ColumnDate).Gte(request.StartDay),
 			goqu.C(ColumnDate).Lte(request.EndDay),
 		)
-	} else if request.StartDay != "" {
+	} else if !request.StartDay.IsZero() {
 		dataSet = dataSet.Where(
 			goqu.C(ColumnDate).Gte(request.StartDay),
 		)
-	} else if request.EndDay != "" {
+	} else if !request.EndDay.IsZero() {
 		dataSet = dataSet.Where(
 			goqu.C(ColumnDate).Lte(request.EndDay),
 		)

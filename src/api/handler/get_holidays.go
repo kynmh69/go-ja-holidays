@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -17,8 +18,12 @@ const (
 )
 
 type HolidaysRequest struct {
-	StartDay string `form:"start-day" binding:"datetime"`
-	EndDay   string `form:"end-day" binding:"datetime"`
+	StartDay time.Time `form:"start_day" time_format:"2006-01-02"`
+	EndDay   time.Time `form:"end_day" time_format:"2006-01-02"`
+}
+
+func (receiver HolidaysRequest) String() string {
+	return fmt.Sprintf("StartDay: \"%s\", EndDay: \"%s\"", receiver.StartDay, receiver.EndDay)
 }
 
 func GetHolidays(c *gin.Context) {
@@ -43,16 +48,16 @@ func GetHolidays(c *gin.Context) {
 	}
 	// リクエストパラメータから開始日と終了日を取得
 	dataSet := db.From(TableHolidaysJp).Order(goqu.C(ColumnDate).Asc())
-	if reqParams.StartDay != "" && reqParams.EndDay != "" {
+	if !reqParams.StartDay.IsZero() && !reqParams.EndDay.IsZero() {
 		dataSet = dataSet.Where(
 			goqu.C(ColumnDate).Gte(reqParams.StartDay),
 			goqu.C(ColumnDate).Lte(reqParams.EndDay),
 		)
-	} else if reqParams.StartDay != "" {
+	} else if !reqParams.StartDay.IsZero() {
 		dataSet = dataSet.Where(
 			goqu.C(ColumnDate).Gte(reqParams.StartDay),
 		)
-	} else if reqParams.EndDay != "" {
+	} else if !reqParams.EndDay.IsZero() {
 		dataSet = dataSet.Where(
 			goqu.C(ColumnDate).Lte(reqParams.EndDay),
 		)

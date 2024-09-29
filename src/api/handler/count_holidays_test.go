@@ -23,25 +23,38 @@ func TestMain(m *testing.M) {
 func TestCountHolidays(t *testing.T) {
 	r := gin.Default()
 	r.GET("/holidays/count", CountHolidays)
-	w := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/holidays/count", nil)
-	context := gin.CreateTestContextOnly(w, r)
-	context.Request = req
-	type args struct {
-		c *gin.Context
-	}
 	tests := []struct {
-		name string
-		args args
+		name   string
+		target string
 	}{
 		{
-			name: "TestCountHolidays",
-			args: args{c: context},
+			name:   "TestCountHolidays",
+			target: "/holidays/count",
+		},
+		{
+			name:   "TestCountHolidaysWithQuery",
+			target: "/holidays/count?start_day=2021-01-01&end_day=2021-12-31",
+		},
+		{
+			name:   "TestCountHolidaysWithQueryStartDay",
+			target: "/holidays/count?start_day=2021-01-01",
+		},
+		{
+			name:   "TestCountHolidaysWithQueryEndDay",
+			target: "/holidays/count?end_day=2021-12-31",
+		},
+		{
+			name:   "TestCountHolidaysWithQueryInvalid",
+			target: "/holidays/count?start_day=2021-01",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			CountHolidays(tt.args.c)
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", tt.target, nil)
+			context := gin.CreateTestContextOnly(w, r)
+			context.Request = req
+			CountHolidays(context)
 		})
 	}
 }
