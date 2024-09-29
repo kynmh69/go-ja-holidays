@@ -15,8 +15,9 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	r.LoadHTMLGlob("view/*.html")
+	r.LoadHTMLGlob("view/*/*.html")
 	r.Static("/css", "./static/css")
+	r.Static("/img", "./static/img")
 	logger := logging.GetLogger()
 
 	//e.HTTPErrorHandler = util.CustomHTTPErrorHandler
