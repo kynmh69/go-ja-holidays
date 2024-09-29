@@ -37,10 +37,9 @@ func IsHoliday(c *gin.Context) {
 	goqu.SetTimeLocation(loc)
 
 	// Get the holiday data for the specified day.
-	dataSet := db.From(TableHolidaysJp).
-		Where(goqu.C(ColumnDate).Eq(request.Date))
-	ok, err := dataSet.ScanStruct(&holiday)
-
+	holiday.Date = request.Date
+	result := db.First(&holiday)
+	err := result.Error
 	if err != nil {
 		logger.Error(err)
 		BadRequestJson(c, err.Error())
@@ -48,12 +47,12 @@ func IsHoliday(c *gin.Context) {
 	}
 
 	var isHoliday model.IsHoliday
-	if ok {
+	if result.RowsAffected > 0 {
 		// If the holiday data exists, return it.
-		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: holiday}
+		isHoliday = model.IsHoliday{IsHoliday: true, HolidayData: holiday}
 	} else {
 		//	If the holiday data does not exist, return the date.
-		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: request.Date}}
+		isHoliday = model.IsHoliday{IsHoliday: false, HolidayData: holiday}
 	}
 	logger.Debug(isHoliday)
 	c.JSON(http.StatusOK, isHoliday)
