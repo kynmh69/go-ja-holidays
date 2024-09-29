@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"log"
 	"time"
 
@@ -66,7 +67,7 @@ func getLatestHoliday() (HolidayDbData, bool) {
 
 func firstInsertHolidays(holidays []HolidayDbData) {
 	db := database.GetDbConnection()
-
+	logger := logging.GetLogger()
 	// タムゾーンをCSV元のものに変更
 	timeLocation := holidays[0].Date.Location()
 	goqu.SetTimeLocation(timeLocation)
@@ -76,9 +77,9 @@ func firstInsertHolidays(holidays []HolidayDbData) {
 		log.Println(err)
 	}
 	if affected, err := result.RowsAffected(); err == nil {
-		log.Println("successfull.", affected)
+		logger.Infoln("successfull.", affected)
 	} else {
-		log.Fatalln("Rows Affected err.", err)
+		logger.Panicln("Rows Affected err.", err)
 	}
 }
 
