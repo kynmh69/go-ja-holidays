@@ -4,8 +4,8 @@ go 1.22.0
 
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0
-	github.com/gin-contrib/multitemplate v1.0.1
 	github.com/gin-gonic/gin v1.10.0
+	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/lib/pq v1.10.1
 	go.uber.org/zap v1.27.0
