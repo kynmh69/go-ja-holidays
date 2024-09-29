@@ -5,10 +5,12 @@ import (
 	"github.com/kynmh69/go-ja-holidays/logging"
 	"github.com/kynmh69/go-ja-holidays/util"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestMain(m *testing.M) {
+	_ = os.Setenv("PSQL_HOSTNAME", "localhost")
 	util.SetUp()
 	code := m.Run()
 	if code > 0 {
