@@ -2,10 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"testing"
 )
 
 func TestMakeRoute(t *testing.T) {
+	logging.LoggerInitialize()
 	r := gin.Default()
 	type args struct {
 		e *gin.Engine
