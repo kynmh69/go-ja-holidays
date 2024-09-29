@@ -10,6 +10,8 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	logging.LoggerInitialize()
+	_ = os.Setenv("DATABASE", "unittest")
 	_ = os.Setenv("PSQL_HOSTNAME", "localhost")
 	util.SetUp()
 	code := m.Run()

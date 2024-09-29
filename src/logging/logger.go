@@ -9,6 +9,9 @@ var logger *zap.SugaredLogger
 
 // LoggerInitialize is a function to initialize logger
 func LoggerInitialize() {
+	if logger != nil {
+		return
+	}
 	ginMode := gin.Mode()
 	var i *zap.Logger
 	switch ginMode {
