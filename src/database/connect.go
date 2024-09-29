@@ -1,19 +1,17 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/kynmh69/go-ja-holidays/logging"
+	"gorm.io/gorm"
 	"os"
 
 	_ "github.com/lib/pq"
 
-	// import the dialect
-	"github.com/doug-martin/goqu/v9"
-	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
+	"gorm.io/driver/postgres"
 )
 
-var goquDb *goqu.Database
+var db *gorm.DB
 
 const NAME = "holidays"
 
@@ -22,29 +20,21 @@ func ConnectDatabase() {
 	var err error
 	logger := logging.GetLogger()
 	hostname, port, dataSourceName := CreateConnectInfo()
-
-	db, err := sql.Open("postgres", dataSourceName)
+	db, err = gorm.Open(postgres.Open(dataSourceName), &gorm.Config{})
 	if err != nil {
 		logger.Fatalln("can not open database.", err)
 	}
 
 	logger.Info("Connecting to database...", hostname, port)
-
-	err = db.Ping()
-	if err == nil {
-		logger.Info("Connected to database.")
-	} else {
-		logger.Panicln("can not ping.", err)
-	}
-
-	goquDb = goqu.New("postgres", db)
 }
 
 func CreateConnectInfo() (string, string, string) {
-
 	hostname, port, username, password, databaseName := getConnectionInfo()
 
-	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", hostname, port, username, password, databaseName)
+	dataSourceName := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Tokyo",
+		hostname, port, username, password, databaseName,
+	)
 	return hostname, port, dataSourceName
 }
 
@@ -73,6 +63,6 @@ func getConnectionInfo() (hostname, port, username, password, databaseName strin
 	return
 }
 
-func GetDbConnection() *goqu.Database {
-	return goquDb
+func GetDbConnection() *gorm.DB {
+	return db
 }
