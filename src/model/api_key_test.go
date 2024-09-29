@@ -44,7 +44,6 @@ func TestCreateApiKey(t *testing.T) {
 		name    string
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name:    "Create API Key",
 			wantErr: false,
