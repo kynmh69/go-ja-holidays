@@ -26,12 +26,8 @@ func downloadCSV(url string) []byte {
 		logger.Panicln("can not read csv file", err)
 	}
 
-	// データを標準出力に表示
-	// log.Println(string(data))
-
 	// UTF-8に変換
 	utf8Data := ShiftJISToUTF8(data)
-	// log.Println(string(utf8Data))
 	return utf8Data
 }
 
@@ -79,6 +75,5 @@ func parseCSV(data []byte) ([]*model.HolidayData, error) {
 			Name: record[1],
 		})
 	}
-	// log.Println(holidays)
 	return holidays, nil
 }
