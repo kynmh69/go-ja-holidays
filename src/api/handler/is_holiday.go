@@ -49,8 +49,10 @@ func IsHoliday(c *gin.Context) {
 
 	var isHoliday model.IsHoliday
 	if ok {
+		// If the holiday data exists, return it.
 		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: holiday}
 	} else {
+		//	If the holiday data does not exist, return the date.
 		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: request.Date}}
 	}
 	logger.Debug(isHoliday)
