@@ -14,6 +14,12 @@ func TestMakeRoute(t *testing.T) {
 		args args
 	}{
 		// TODO: Add test cases.
+		{
+			name: "Test MakeRoute",
+			args: args{
+				r: gin.Default(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
