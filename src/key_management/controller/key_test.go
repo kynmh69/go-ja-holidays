@@ -259,7 +259,6 @@ func TestKeyManagement_Delete(t *testing.T) {
 		fields fields
 		args   args
 	}{
-		// TODO: Add test cases.
 		{
 			name:   "test OK",
 			fields: fields{ControllerName: "key"},
