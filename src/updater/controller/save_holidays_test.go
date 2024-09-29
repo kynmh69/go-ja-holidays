@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"log"
 	"os"
 	"reflect"
@@ -68,8 +69,8 @@ func Test_getLatestHoliday(t *testing.T) {
 		want1 bool
 	}{
 		{
-			name: "ok",
-			want: wants,
+			name:  "ok",
+			want:  wants,
 			want1: true,
 		},
 	}
@@ -179,8 +180,9 @@ func Test_updateData(t *testing.T) {
 }
 
 func setUp() {
-	os.Setenv("DATABASE", "unittest")
-	os.Setenv("PSQL_HOSTNAME", "localhost")
+	logging.LoggerInitialize()
+	_ = os.Setenv("DATABASE", "unittest")
+	_ = os.Setenv("PSQL_HOSTNAME", "localhost")
 	loc, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
 		log.Fatalln(err)
@@ -200,7 +202,7 @@ func tearDown() {
 	if _, err := db.Delete(TABLE_HOLIDAYS_JP).Executor().Exec(); err != nil {
 		log.Fatalln(err)
 	}
-	os.Unsetenv("DATABASE")
-	os.Unsetenv("PSQL_HOSTNAME")
+	_ = os.Unsetenv("DATABASE")
+	_ = os.Unsetenv("PSQL_HOSTNAME")
 	log.Println("Tear down.")
 }

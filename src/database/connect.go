@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -15,29 +15,29 @@ import (
 
 var goquDb *goqu.Database
 
-const DATABASE_NAME = "holidays"
+const NAME = "holidays"
 
 func ConnectDatabase() {
 	// connect to database
 	var err error
+	logger := logging.GetLogger()
 	hostname, port, dataSourceName := CreateConnectInfo()
 
 	db, err := sql.Open("postgres", dataSourceName)
 	if err != nil {
-		log.Fatalln("can not open database.", err)
+		logger.Fatalln("can not open database.", err)
 	}
 
-	log.Println("Connecting to database...", hostname, port)
+	logger.Info("Connecting to database...", hostname, port)
 
 	err = db.Ping()
 	if err == nil {
-		log.Println("Connected to database.")
+		logger.Info("Connected to database.")
 	} else {
-		log.Fatalln("can not ping.", err)
+		logger.Panicln("can not ping.", err)
 	}
 
 	goquDb = goqu.New("postgres", db)
-	goquDb.Logger(initLogger())
 }
 
 func CreateConnectInfo() (string, string, string) {
@@ -68,15 +68,11 @@ func getConnectionInfo() (hostname, port, username, password, databaseName strin
 	databaseName, ok = os.LookupEnv("DATABASE")
 
 	if !ok {
-		databaseName = DATABASE_NAME
+		databaseName = NAME
 	}
 	return
 }
 
 func GetDbConnection() *goqu.Database {
 	return goquDb
-}
-
-func initLogger() *log.Logger {
-	return log.New(os.Stdout, "[SQL] ", log.LstdFlags|log.Lshortfile)
 }
