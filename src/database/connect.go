@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/kynmh69/go-ja-holidays/logging"
 	"gorm.io/gorm"
 	"os"
@@ -22,7 +23,7 @@ func ConnectDatabase() {
 	hostname, port, dataSourceName := CreateConnectInfo()
 	db, err = gorm.Open(postgres.Open(dataSourceName), &gorm.Config{})
 	if err != nil {
-		logger.Fatalln("can not open database.", err)
+		logger.Panicln("can not open database.", err)
 	}
 
 	logger.Info("Connecting to database...", hostname, port)
@@ -64,5 +65,9 @@ func getConnectionInfo() (hostname, port, username, password, databaseName strin
 }
 
 func GetDbConnection() *gorm.DB {
+	ginMode := gin.Mode()
+	if ginMode == gin.DebugMode {
+		return db.Debug()
+	}
 	return db
 }

@@ -180,6 +180,7 @@ func setUp() {
 	logging.LoggerInitialize()
 	_ = os.Setenv("DATABASE", "unittest")
 	_ = os.Setenv("PSQL_HOSTNAME", "localhost")
+	_ = os.Setenv("GIN_MODE", "debug")
 	loc, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
 		log.Fatalln(err)
@@ -202,6 +203,7 @@ func setUp() {
 func tearDown() {
 	db := database.GetDbConnection()
 	if err := db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Unscoped().
 		Delete(&model.HolidayData{}).Error; err != nil {
 		log.Fatalln(err)
 	}

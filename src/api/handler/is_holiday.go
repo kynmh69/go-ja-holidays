@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"net/http"
 	"time"
 
@@ -40,19 +42,14 @@ func IsHoliday(c *gin.Context) {
 	holiday.Date = request.Date
 	result := db.First(&holiday)
 	err := result.Error
-	if err != nil {
-		logger.Error(err)
-		BadRequestJson(c, err.Error())
-		return
-	}
 
 	var isHoliday model.IsHoliday
-	if result.RowsAffected > 0 {
-		// If the holiday data exists, return it.
-		isHoliday = model.IsHoliday{IsHoliday: true, HolidayData: holiday}
-	} else {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		//	If the holiday data does not exist, return the date.
 		isHoliday = model.IsHoliday{IsHoliday: false, HolidayData: holiday}
+	} else {
+		// If the holiday data exists, return it.
+		isHoliday = model.IsHoliday{IsHoliday: true, HolidayData: holiday}
 	}
 	logger.Debug(isHoliday)
 	c.JSON(http.StatusOK, isHoliday)

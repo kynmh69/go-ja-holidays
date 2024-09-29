@@ -49,11 +49,11 @@ func GetHolidays(c *gin.Context) {
 	// リクエストパラメータから開始日と終了日を取得
 	dataSet := db.Model(&model.HolidayData{}).Order(goqu.C(ColumnDate).Asc())
 	if !reqParams.StartDay.IsZero() && !reqParams.EndDay.IsZero() {
-		dataSet = dataSet.Where("holiday_date between ? and ?", reqParams.StartDay, reqParams.EndDay)
+		dataSet = dataSet.Where("date between ? and ?", reqParams.StartDay, reqParams.EndDay)
 	} else if !reqParams.StartDay.IsZero() {
-		dataSet = dataSet.Where("holiday_date >= ?", reqParams.StartDay)
+		dataSet = dataSet.Where("date >= ?", reqParams.StartDay)
 	} else if !reqParams.EndDay.IsZero() {
-		dataSet = dataSet.Where("holiday_date <= ?", reqParams.EndDay)
+		dataSet = dataSet.Where("date <= ?", reqParams.EndDay)
 	}
 	// データ取得
 	if err := dataSet.Find(&holidays).Error; err != nil {

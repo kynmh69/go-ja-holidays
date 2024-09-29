@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"errors"
 	"github.com/kynmh69/go-ja-holidays/logging"
 	"github.com/kynmh69/go-ja-holidays/model"
+	"gorm.io/gorm"
 	"log"
 	"time"
 
@@ -43,7 +45,7 @@ func getLatestHoliday() *model.HolidayData {
 	db := database.GetDbConnection()
 	err := db.Last(&oldRow).Error
 
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		logger.Panicln(err)
 	}
 	logger.Infoln("old row found", oldRow)
