@@ -31,10 +31,8 @@ func TestKeyManagement_Retrieve(t *testing.T) {
 	mg := NewKeyManagement("key")
 	target := "/manage/key"
 	r.GET(target, mg.Retrieve)
-	req := httptest.NewRequest(http.MethodGet, target, nil)
-	rec := httptest.NewRecorder()
-	ctx := gin.CreateTestContextOnly(rec, r)
-	ctx.Request = req
+	get := http.MethodGet
+	ctx := createContext(get, target, r)
 	wd, _ := util.JoinProjectRootPath(ViewDir)
 	r.LoadHTMLGlob(wd)
 	type fields struct {
@@ -68,6 +66,14 @@ func TestKeyManagement_Retrieve(t *testing.T) {
 			k.Retrieve(tt.args.c)
 		})
 	}
+}
+
+func createContext(get string, target string, r *gin.Engine) *gin.Context {
+	req := httptest.NewRequest(get, target, nil)
+	rec := httptest.NewRecorder()
+	ctx := gin.CreateTestContextOnly(rec, r)
+	ctx.Request = req
+	return ctx
 }
 
 func TestKeyManagement_GetControllerName(t *testing.T) {
@@ -154,6 +160,118 @@ func TestNewKeyManagement(t *testing.T) {
 			if got := NewKeyManagement(tt.args.controllerName); !reflect.DeepEqual(got.ControllerName, tt.want.ControllerName) {
 				t.Errorf("NewKeyManagement() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestKeyManagement_Create(t *testing.T) {
+	r := gin.Default()
+	util.SetUp()
+	mg := NewKeyManagement("key")
+	target := "/manage/key"
+	r.POST(target, mg.Create)
+	post := http.MethodPost
+	ctx := createContext(post, target, r)
+	wd, _ := util.JoinProjectRootPath(ViewDir)
+	r.LoadHTMLGlob(wd)
+	type fields struct {
+		ControllerName string
+	}
+	type args struct {
+		c *gin.Context
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name:   "test OK",
+			fields: fields{ControllerName: "key"},
+			args:   args{c: ctx},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k := KeyManagement{
+				ControllerName: tt.fields.ControllerName,
+			}
+			k.Create(tt.args.c)
+		})
+	}
+}
+
+func TestKeyManagement_Update(t *testing.T) {
+	r := gin.Default()
+	util.SetUp()
+	mg := NewKeyManagement("key")
+	target := "/manage/key"
+	r.PUT(target, mg.Update)
+	post := http.MethodPut
+	ctx := createContext(post, target, r)
+	wd, _ := util.JoinProjectRootPath(ViewDir)
+	r.LoadHTMLGlob(wd)
+	type fields struct {
+		ControllerName string
+	}
+	type args struct {
+		c *gin.Context
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name:   "test OK",
+			fields: fields{ControllerName: "key"},
+			args:   args{c: ctx},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k := KeyManagement{
+				ControllerName: tt.fields.ControllerName,
+			}
+			k.Update(tt.args.c)
+		})
+	}
+}
+
+func TestKeyManagement_Delete(t *testing.T) {
+	r := gin.Default()
+	util.SetUp()
+	mg := NewKeyManagement("key")
+	target := "/manage/key"
+	r.POST(target, mg.Create)
+	post := http.MethodPost
+	ctx := createContext(post, target, r)
+	wd, _ := util.JoinProjectRootPath(ViewDir)
+	r.LoadHTMLGlob(wd)
+	type fields struct {
+		ControllerName string
+	}
+	type args struct {
+		c *gin.Context
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		// TODO: Add test cases.
+		{
+			name:   "test OK",
+			fields: fields{ControllerName: "key"},
+			args:   args{c: ctx},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k := KeyManagement{
+				ControllerName: tt.fields.ControllerName,
+			}
+			k.Delete(tt.args.c)
 		})
 	}
 }
