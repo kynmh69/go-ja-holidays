@@ -41,7 +41,7 @@ func getLatestHoliday() *model.HolidayData {
 	logger := logging.GetLogger()
 	var oldRow model.HolidayData
 	db := database.GetDbConnection()
-	err := db.First(&oldRow).Order("created_at desc").Error
+	err := db.Last(&oldRow).Error
 
 	if err != nil {
 		logger.Panicln(err)

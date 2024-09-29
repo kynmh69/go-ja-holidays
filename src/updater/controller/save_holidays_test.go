@@ -2,6 +2,8 @@ package controller
 
 import (
 	"github.com/kynmh69/go-ja-holidays/logging"
+	"github.com/kynmh69/go-ja-holidays/model"
+	"gorm.io/gorm"
 	"log"
 	"os"
 	"reflect"
@@ -15,7 +17,7 @@ func TestMain(m *testing.M) {
 	setUp()
 	defer tearDown()
 	exitVal := m.Run()
-	os.Exit(exitVal)
+	logging.GetLogger().Infoln("exit code:", exitVal)
 }
 
 func TestSaveHolidays(t *testing.T) {
@@ -23,14 +25,14 @@ func TestSaveHolidays(t *testing.T) {
 	if err != nil {
 		log.Println(err)
 	}
-	holidays := []HolidayDbData{
+	holidays := []*model.HolidayData{
 		{
 			Date: time.Date(2004, 1, 4, 0, 0, 0, 0, loc),
 			Name: "テスト祝日4",
 		},
 	}
 	type args struct {
-		holidays []HolidayDbData
+		holidays []*model.HolidayData
 	}
 	tests := []struct {
 		name string
@@ -54,7 +56,7 @@ func TestSaveHolidays(t *testing.T) {
 			switch i {
 			case 1:
 				db := database.GetDbConnection()
-				db.Delete(TABLE_HOLIDAYS_JP)
+				db.Delete(&model.HolidayData{})
 			}
 			SaveHolidays(tt.args.holidays)
 		})
@@ -62,26 +64,21 @@ func TestSaveHolidays(t *testing.T) {
 }
 
 func Test_getLatestHoliday(t *testing.T) {
-	wants, _ := getLatestHoliday()
+	wants := getLatestHoliday()
 	tests := []struct {
-		name  string
-		want  HolidayDbData
-		want1 bool
+		name string
+		want *model.HolidayData
 	}{
 		{
-			name:  "ok",
-			want:  wants,
-			want1: true,
+			name: "ok",
+			want: wants,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := getLatestHoliday()
+			got := getLatestHoliday()
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getLatestHoliday() got = %v, want %v", got, tt.want)
-			}
-			if got1 != tt.want1 {
-				t.Errorf("getLatestHoliday() got1 = %v, want %v", got1, tt.want1)
 			}
 		})
 	}
@@ -92,14 +89,14 @@ func Test_firstInsertHolidays(t *testing.T) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	holidaysD := []HolidayDbData{
+	holidaysD := []*model.HolidayData{
 		{Date: time.Date(2002, 1, 1, 0, 0, 0, 0, loc), Name: "テスト祝日1"},
 		{Date: time.Date(2002, 1, 2, 0, 0, 0, 0, loc), Name: "テスト祝日2"},
 		{Date: time.Date(2002, 1, 3, 0, 0, 0, 0, loc), Name: "テスト祝日3"},
 		{Date: time.Date(2002, 1, 4, 0, 0, 0, 0, loc), Name: "テスト祝日4"},
 	}
 	type args struct {
-		holidays []HolidayDbData
+		holidays []*model.HolidayData
 	}
 	tests := []struct {
 		name string
@@ -118,24 +115,24 @@ func Test_firstInsertHolidays(t *testing.T) {
 }
 
 func Test_createDiff(t *testing.T) {
-	newHolidayData := []HolidayDbData{
+	newHolidayData := []*model.HolidayData{
 		{Date: time.Now().AddDate(1, 0, 0), Name: "テスト祝日"},
 	}
-	oldData := HolidayDbData{Date: time.Now(), Name: "テスト祝日最後"}
+	oldData := model.HolidayData{Date: time.Now(), Name: "テスト祝日最後"}
 	type args struct {
-		newHolidayData []HolidayDbData
-		oldHolidayData HolidayDbData
+		newHolidayData []*model.HolidayData
+		oldHolidayData *model.HolidayData
 	}
 	tests := []struct {
 		name string
 		args args
-		want []HolidayDbData
+		want []*model.HolidayData
 	}{
 		{
 			name: "ok",
 			args: args{
 				newHolidayData: newHolidayData,
-				oldHolidayData: oldData,
+				oldHolidayData: &oldData,
 			},
 			want: newHolidayData,
 		},
@@ -151,13 +148,13 @@ func Test_createDiff(t *testing.T) {
 }
 
 func Test_updateData(t *testing.T) {
-	newHolidayData := []HolidayDbData{
+	newHolidayData := []*model.HolidayData{
 		{Date: time.Now().AddDate(1, 0, 0), Name: "テスト祝日"},
 	}
-	oldData := HolidayDbData{Date: time.Now(), Name: "テスト祝日最後"}
+	oldData := model.HolidayData{Date: time.Now(), Name: "テスト祝日最後"}
 	type args struct {
-		newHolidayData []HolidayDbData
-		oldData        HolidayDbData
+		newHolidayData []*model.HolidayData
+		oldData        *model.HolidayData
 	}
 	tests := []struct {
 		name string
@@ -167,7 +164,7 @@ func Test_updateData(t *testing.T) {
 			"ok",
 			args{
 				newHolidayData: newHolidayData,
-				oldData:        oldData,
+				oldData:        &oldData,
 			},
 		},
 	}
@@ -187,19 +184,25 @@ func setUp() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	holidays := []HolidayDbData{
+	holidays := []*model.HolidayData{
 		{Date: time.Date(2004, 1, 1, 0, 0, 0, 0, loc), Name: "テスト祝日1"},
 		{Date: time.Date(2004, 1, 2, 0, 0, 0, 0, loc), Name: "テスト祝日2"},
 		{Date: time.Date(2004, 1, 3, 0, 0, 0, 0, loc), Name: "テスト祝日3"},
 		{Date: time.Date(2004, 1, 4, 0, 0, 0, 0, loc), Name: "テスト祝日4"},
 	}
 	database.ConnectDatabase()
+	db := database.GetDbConnection()
+	err = db.AutoMigrate(&model.HolidayData{}, &model.ApiKey{})
+	if err != nil {
+		log.Fatalln(err)
+	}
 	firstInsertHolidays(holidays)
 }
 
 func tearDown() {
 	db := database.GetDbConnection()
-	if _, err := db.Delete(TABLE_HOLIDAYS_JP).Executor().Exec(); err != nil {
+	if err := db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&model.HolidayData{}).Error; err != nil {
 		log.Fatalln(err)
 	}
 	_ = os.Unsetenv("DATABASE")
