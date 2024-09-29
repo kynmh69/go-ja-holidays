@@ -1,41 +1,49 @@
 package controller
 
 import (
-	"errors"
+	"github.com/gin-gonic/gin"
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"net/http"
 
 	"github.com/kynmh69/go-ja-holidays/model"
-	"github.com/labstack/echo/v4"
 )
 
 const (
-	TOP_PAGE_NAME = "top.html"
-	TOP_PATH      = "/manage/key"
+	TopPageName = "top.html"
+	TopPath     = "/manage/key"
 )
 
 type KeyManagement struct {
 	ControllerName string
 }
 
-func (k KeyManagement) Retrieve(c echo.Context) error {
-	logger := c.Logger()
+func (k KeyManagement) Retrieve(c *gin.Context) {
+	logger := logging.GetLogger()
 	apiKeys, _ := model.GetApiKeys()
-	logger.Debug("APIKEYS", apiKeys)
-	return c.Render(http.StatusOK, TOP_PAGE_NAME, apiKeys)
+	logger.Debug("API keys retrieved successfully.")
+	c.HTML(http.StatusOK, TopPageName, apiKeys)
 }
 
-func (k KeyManagement) Create(c echo.Context) error {
-	model.CreateApiKey(c)
-	return c.Redirect(http.StatusFound, TOP_PATH)
+func (k KeyManagement) Create(c *gin.Context) {
+	err := model.CreateApiKey()
+	if err != nil {
+		c.HTML(500, "error", gin.H{"error": err.Error()})
+		return
+	}
+	c.Redirect(http.StatusFound, TopPath)
 }
 
-func (k KeyManagement) Update(c echo.Context) error {
-	return errors.New("not implemented")
+func (k KeyManagement) Update(c *gin.Context) {
+	c.HTML(500, "update", nil)
 }
 
-func (k KeyManagement) Delete(c echo.Context) error {
-	model.DeleteApiKey(c)
-	return c.Redirect(http.StatusFound, TOP_PATH)
+func (k KeyManagement) Delete(c *gin.Context) {
+	err := model.DeleteApiKey()
+	if err != nil {
+		c.HTML(500, "error", gin.H{"error": err.Error()})
+		return
+	}
+	c.Redirect(http.StatusFound, TopPath)
 }
 
 func (k KeyManagement) GetControllerName() string {

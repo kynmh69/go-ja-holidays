@@ -1,34 +1,28 @@
 package main
 
 import (
-	"os"
-
+	"github.com/gin-gonic/gin"
 	"github.com/kynmh69/go-ja-holidays/database"
 	"github.com/kynmh69/go-ja-holidays/key_management/router"
-	"github.com/kynmh69/go-ja-holidays/key_management/template"
-	"github.com/kynmh69/go-ja-holidays/middleware"
-	"github.com/kynmh69/go-ja-holidays/util"
-	"github.com/labstack/echo/v4"
-	mid "github.com/labstack/echo/v4/middleware"
+	"github.com/kynmh69/go-ja-holidays/logging"
+	"os"
 )
 
 func init() {
-	util.LoggerInitialize()
+	logging.LoggerInitialize()
 	database.ConnectDatabase()
 }
 
 func main() {
-	e := echo.New()
-	util.EchoLoggerInitialize(e)
-	middleware.SetMiddleware(e)
-	e.Use(mid.Static("./static"))
-	logger := e.Logger
+	r := gin.Default()
+	r.LoadHTMLGlob("view/*/*.html")
+	r.Static("/css", "./static/css")
+	r.Static("/img", "./static/img")
+	logger := logging.GetLogger()
 
-	t := template.NewTemplate("view/*.html")
-	e.Renderer = t
-	e.HTTPErrorHandler = util.CustomHTTPErrorHandler
-	router.MakeRoute(e)
+	//e.HTTPErrorHandler = util.CustomHTTPErrorHandler
+	router.MakeRoute(r)
 	wd, _ := os.Getwd()
 	logger.Debug(wd)
-	logger.Fatal(e.Start(":80"))
+	logger.Fatal(r.Run(":8080"))
 }
