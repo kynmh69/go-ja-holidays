@@ -3,14 +3,12 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kynmh69/go-ja-holidays/logging"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"reflect"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/kynmh69/go-ja-holidays/database"
 	"github.com/kynmh69/go-ja-holidays/model"
 	"github.com/kynmh69/go-ja-holidays/util"
@@ -111,30 +109,25 @@ func setUp() {
 	database.ConnectDatabase()
 	util.CreateHolidayData(url)
 	db := database.GetDbConnection()
-	u := uuid.New()
-	apikey := model.ApiKey{Key: u.String()}
-	res, err := db.Insert(model.TABLE_API_KEY).Rows(
-		apikey,
-	).
-		Executor().Exec()
+	logger := logging.GetLogger()
+	var apikey model.ApiKey
+	res := db.Create(&apikey)
+	err := res.Error
 	if err != nil {
-		log.Fatalln(err)
+		logger.Panicln(err)
 	}
-	r, err := res.RowsAffected()
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(r)
+	logger.Infoln("rows affected: ", res.RowsAffected)
 }
 
 func tearDown() {
 	_ = os.Unsetenv("PSQL_HOSTNAME")
 	_ = os.Unsetenv("DATABASE")
 	db := database.GetDbConnection()
-	if _, err := db.Delete(model.TABLE_API_KEY).Executor().Exec(); err != nil {
-		log.Fatalln(err)
+	logger := logging.GetLogger()
+	if result := db.Delete(&model.HolidayData{}); result.Error != nil {
+		logger.Panicln(result.Error)
 	}
-	log.Println("Teardown.")
+	logger.Infoln("Teardown.")
 }
 
 func TestNewKeyManagement(t *testing.T) {
