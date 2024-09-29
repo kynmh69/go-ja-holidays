@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kynmh69/go-ja-holidays/logging"
+	"github.com/kynmh69/go-ja-holidays/model"
 	"net/http"
 	"time"
 
@@ -32,22 +33,16 @@ func CountHolidays(c *gin.Context) {
 	logger.Debug("request:", request)
 	db := database.GetDbConnection()
 
-	dataSet := db.From(TableHolidaysJp)
+	dataSet := db.Model(&model.HolidayData{})
 	if !request.StartDay.IsZero() && !request.EndDay.IsZero() {
-		dataSet = dataSet.Where(
-			goqu.C(ColumnDate).Gte(request.StartDay),
-			goqu.C(ColumnDate).Lte(request.EndDay),
-		)
+		dataSet = dataSet.Where("created_at BETWEEN ? AND ?", request.StartDay, request.EndDay)
 	} else if !request.StartDay.IsZero() {
-		dataSet = dataSet.Where(
-			goqu.C(ColumnDate).Gte(request.StartDay),
-		)
+		dataSet = dataSet.Where("created_at >= ?", request.StartDay)
 	} else if !request.EndDay.IsZero() {
-		dataSet = dataSet.Where(
-			goqu.C(ColumnDate).Lte(request.EndDay),
-		)
+		dataSet = dataSet.Where("created_at <= ?", request.EndDay)
 	}
-	count, err := dataSet.Count()
+	var count int64
+	err := dataSet.Count(&count).Error
 	if err != nil {
 		BadRequestJson(c, err.Error())
 		return
