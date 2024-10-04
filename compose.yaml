@@ -1,9 +1,8 @@
 services:
   database:
-    image: postgres:16
+    image: postgres:17
     volumes:
       - psql_data:/var/lib/postgresql/data:rw
-    restart: always
     environment:
       - TZ=Asia/Tokyo
       - POSTGRES_USER=app
@@ -13,6 +12,12 @@ services:
       - net-1
     ports:
       - "5432:5432"
+    healthcheck:
+      test: "pg_isready -U app"
+      interval: 10s
+      timeout: 5s
+      retries: 100
+      start_period: 10s
 
   data_updater:
     build:
@@ -21,7 +26,8 @@ services:
     environment:
       - TZ=Asia/Tokyo
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
       - net-1
   
@@ -33,7 +39,8 @@ services:
       - TZ=Asia/Tokyo
       - LOG_LEVEL=debug
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
       - net-1
     volumes:
@@ -49,7 +56,8 @@ services:
       - TZ=Asia/Tokyo
       - LOG_LEVEL=info
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
       - net-1
     volumes:
