@@ -18,6 +18,7 @@ env:
   UPDATER_DIR: "src/updater"
   API_DIR: "src/api"
   KEY_MAN_DIR: "src/key_management"
+  SRC_DIR: "src"
 
 jobs:
   coverage-updater:
@@ -140,7 +141,7 @@ jobs:
             src/go.sum
 
     - name: Run migration
-      working-directory: ${{ env.KEY_MAN_DIR }}
+      working-directory: ${{ env.SRC_DIR }}
       shell: bash -l {0}
       env:
         PSQL_HOSTNAME: localhost
