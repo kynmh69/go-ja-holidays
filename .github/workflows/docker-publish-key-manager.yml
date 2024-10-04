@@ -135,7 +135,7 @@ jobs:
       shell: bash -l {0}
       run: |
         go mod download
-        go run src/cmd/migration.go
+        go run cmd/migration.go
 
     - name: Build
       working-directory: ${{ env.KEY_MAN_DIR }}
