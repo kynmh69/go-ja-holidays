@@ -142,9 +142,12 @@ jobs:
     - name: Run migration
       working-directory: ${{ env.KEY_MAN_DIR }}
       shell: bash -l {0}
+      env:
+        PSQL_HOSTNAME: localhost
+        DATABASE: unittest
       run: |
-        go install github.com/pressly/goose/v3/cmd/goose@latest
-        $(go env GOPATH)/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
+        go mod download
+        go cmd/migration.go
 
     - name: Build
       working-directory: ${{ env.KEY_MAN_DIR }}
