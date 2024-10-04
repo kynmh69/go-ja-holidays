@@ -13,7 +13,6 @@ func TestMakeRoute(t *testing.T) {
 		name string
 		args args
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test MakeRoute",
 			args: args{

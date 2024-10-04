@@ -7,7 +7,7 @@
 
 ## データベースのマイグレーション
 
-マイグレーションはgooseを利用します。
+マイグレーションはgromを利用します。
 
 ### データベースの起動
 
@@ -17,24 +17,17 @@
 docker compose up -d database 
 ```
 
-### gooseのインストール
+### gormのダウンロード
 
 ```bash
-go install github.com/pressly/goose/v3/cmd/goose@latest
+go mod download
 ```
 
 ### マイグレーションの実行
 
 ```bash
-cd src/updater/database/migrations
-goose postgres "host=localhost user=app password=password dbname=holidays sslmode=disable" up
-```
-
-### マイグレーションの削除
-
-```bash
-cd src/updater/database/migrations
-goose postgres "host=localhost user=app password=password dbname=holidays sslmode=disable" down
+cd src/cmd
+go run migration.go
 ```
 
 ## 実行方法

@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"errors"
 	"github.com/kynmh69/go-ja-holidays/logging"
+	"github.com/kynmh69/go-ja-holidays/model"
+	"gorm.io/gorm"
 	"log"
 	"time"
 
@@ -9,82 +12,67 @@ import (
 	"github.com/kynmh69/go-ja-holidays/database"
 )
 
-type HolidayDbData struct {
-	Uuid      string    `db:"id" goqu:"skipinsert"`
-	Date      time.Time `db:"holiday_date"`
-	Name      string    `db:"holiday_name"`
-	CreatedAt time.Time `db:"created_at" goqu:"skipinsert"`
-	UpdatedAt time.Time `db:"updated_at" goqu:"skipinsert"`
-}
-
 const (
-	TABLE_HOLIDAYS_JP = "holidays_jp"
-	COLUMN_DATE       = "holiday_date"
-	LOCATION          = "Asia/Tokyo"
+	LOCATION = "Asia/Tokyo"
 )
 
-func SaveHolidays(holidays []HolidayDbData) {
-	latestHoliday, ok := getLatestHoliday()
+func SaveHolidays(holidays []*model.HolidayData) {
+	logger := logging.GetLogger()
+	latestHoliday := getLatestHoliday()
 	if len(holidays) == 0 {
-		log.Println("データがないため追加しません")
+		logger.Warnln("データがないため追加しません")
 		return
 	}
 	newHoliday := holidays[len(holidays)-1]
-	if ok && latestHoliday.Date.UTC() != newHoliday.Date.UTC() {
+	if latestHoliday.Date.UTC() != newHoliday.Date.UTC() {
 		// 差分を更新
-		log.Println("save new holiday", latestHoliday, newHoliday)
+		logger.Infoln("save new holiday", latestHoliday, newHoliday)
 		updateData(holidays, latestHoliday)
 	} else if latestHoliday.Date.UTC() == newHoliday.Date.UTC() {
 		// 差分がない場合
-		log.Println("No New data. Did not update", TABLE_HOLIDAYS_JP)
+		logger.Warnln("No New data. Did not update")
 	} else {
 		// 新規登録
-		log.Println("First submit")
+		logger.Warnln("First submit")
 		firstInsertHolidays(holidays)
 	}
 
 }
 
-func getLatestHoliday() (HolidayDbData, bool) {
-	var oldRow HolidayDbData
+func getLatestHoliday() *model.HolidayData {
+	logger := logging.GetLogger()
+	var oldRow model.HolidayData
 	db := database.GetDbConnection()
-	ok, err := db.From(TABLE_HOLIDAYS_JP).
-		Order(goqu.C(COLUMN_DATE).Desc()).
-		ScanStruct(&oldRow)
+	err := db.Last(&oldRow).Error
 
-	if err != nil {
-		log.Fatalln(err)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		logger.Panicln(err)
 	}
+	logger.Infoln("old row found", oldRow)
 
-	if ok {
-		log.Println("old row found", oldRow)
-	} else {
-		log.Println("old row not found")
-	}
-
-	return oldRow, ok
+	return &oldRow
 }
 
-func firstInsertHolidays(holidays []HolidayDbData) {
+func firstInsertHolidays(holidays []*model.HolidayData) {
 	db := database.GetDbConnection()
 	logger := logging.GetLogger()
 	// タムゾーンをCSV元のものに変更
 	timeLocation := holidays[0].Date.Location()
 	goqu.SetTimeLocation(timeLocation)
 
-	result, err := db.Insert(TABLE_HOLIDAYS_JP).Rows(holidays).Executor().Exec()
-	if err != nil {
-		log.Println(err)
+	result := db.Create(holidays)
+	if result.Error != nil {
+		logger.Errorln(result.Error)
 	}
-	if affected, err := result.RowsAffected(); err == nil {
+	if affected := result.RowsAffected; affected > 0 {
 		logger.Infoln("successfull.", affected)
 	} else {
-		logger.Panicln("Rows Affected err.", err)
+		logger.Panicln("Rows Affected err.", affected)
 	}
 }
 
-func createDiff(newHolidayData []HolidayDbData, oldHolidayData HolidayDbData) []HolidayDbData {
-	var updateData []HolidayDbData
+func createDiff(newHolidayData []*model.HolidayData, oldHolidayData *model.HolidayData) []*model.HolidayData {
+	var updateData []*model.HolidayData
 	for _, v := range newHolidayData {
 		if v.Date.After(oldHolidayData.Date) {
 			updateData = append(updateData, v)
@@ -93,7 +81,8 @@ func createDiff(newHolidayData []HolidayDbData, oldHolidayData HolidayDbData) []
 	return updateData
 }
 
-func updateData(newHolidayData []HolidayDbData, oldData HolidayDbData) {
+func updateData(newHolidayData []*model.HolidayData, oldData *model.HolidayData) {
+	logger := logging.GetLogger()
 	updateData := createDiff(newHolidayData, oldData)
 	var location *time.Location
 	var err error
@@ -108,15 +97,14 @@ func updateData(newHolidayData []HolidayDbData, oldData HolidayDbData) {
 	db := database.GetDbConnection()
 	goqu.SetTimeLocation(location)
 
-	result, err := db.Insert(TABLE_HOLIDAYS_JP).Rows(updateData).Executor().Exec()
-
-	if err != nil {
-		log.Fatalln(err)
+	result := db.Create(updateData)
+	if result.Error != nil {
+		logger.Panicln(err)
 	}
 
-	if affected, err := result.RowsAffected(); err == nil {
-		log.Println("affected", affected)
+	if affected := result.RowsAffected; affected > 0 {
+		logger.Infoln("affected", affected)
 	} else {
-		log.Fatalln(err)
+		logger.Panicln("Rows Affected err.", affected)
 	}
 }

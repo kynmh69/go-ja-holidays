@@ -30,6 +30,7 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   UPDATER_DIR: "src/updater"
+  SRC_DIR: "src"
   AWS_REGION: us-east-1
   ECS_SERVICE: holidays-updater-service
   ECS_CLUSTER: holidays-cluster
@@ -126,11 +127,14 @@ jobs:
               src/go.sum
 
     - name: Run migration
-      working-directory: ${{ env.UPDATER_DIR }}
+      working-directory: ${{ env.SRC_DIR }}
       shell: bash -l {0}
+      env:
+        PSQL_HOSTNAME: localhost
+        DATABASE: unittest
       run: |
-        go install github.com/pressly/goose/v3/cmd/goose@latest
-        $(go env GOPATH)/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
+        go mod download
+        go run cmd/migration.go
 
     - name: Build
       working-directory: ${{ env.UPDATER_DIR }}

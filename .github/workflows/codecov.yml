@@ -18,6 +18,7 @@ env:
   UPDATER_DIR: "src/updater"
   API_DIR: "src/api"
   KEY_MAN_DIR: "src/key_management"
+  SRC_DIR: "src"
 
 jobs:
   coverage-updater:
@@ -43,11 +44,14 @@ jobs:
             src/go.sum
 
     - name: Run migration
-      working-directory: ${{ env.UPDATER_DIR }}
+      working-directory: ${{ env.SRC_DIR }}
       shell: bash -l {0}
+      env:
+        PSQL_HOSTNAME: localhost
+        DATABASE: unittest
       run: |
-        go install github.com/pressly/goose/v3/cmd/goose@latest
-        $(go env GOPATH)/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
+        go mod download
+        go run cmd/migration.go
 
     - name: Build
       working-directory: ${{ env.UPDATER_DIR }}
@@ -91,11 +95,14 @@ jobs:
             src/go.sum
 
     - name: Run migration
-      working-directory: ${{ env.API_DIR }}
+      working-directory: ${{ env.SRC_DIR }}
       shell: bash -l {0}
+      env:
+        PSQL_HOSTNAME: localhost
+        DATABASE: unittest
       run: |
-        go install github.com/pressly/goose/v3/cmd/goose@latest
-        $(go env GOPATH)/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
+        go mod download
+        go run cmd/migration.go
 
 
     - name: Build
@@ -140,11 +147,14 @@ jobs:
             src/go.sum
 
     - name: Run migration
-      working-directory: ${{ env.KEY_MAN_DIR }}
+      working-directory: ${{ env.SRC_DIR }}
       shell: bash -l {0}
+      env:
+        PSQL_HOSTNAME: localhost
+        DATABASE: unittest
       run: |
-        go install github.com/pressly/goose/v3/cmd/goose@latest
-        $(go env GOPATH)/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
+        go mod download
+        go run cmd/migration.go
 
     - name: Build
       working-directory: ${{ env.KEY_MAN_DIR }}

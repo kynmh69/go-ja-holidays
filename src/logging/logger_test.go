@@ -11,7 +11,6 @@ func TestGetLogger(t *testing.T) {
 		name string
 		want *zap.SugaredLogger
 	}{
-		// TODO: Add test cases.
 		{
 			name: "TestGetLogger",
 			want: nil,
@@ -30,7 +29,6 @@ func TestLoggerInitialize(t *testing.T) {
 	tests := []struct {
 		name string
 	}{
-		// TODO: Add test cases.
 		{
 			name: "testLoggerInitialize",
 		},

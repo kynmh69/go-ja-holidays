@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"net/http"
 	"time"
 
@@ -37,23 +39,17 @@ func IsHoliday(c *gin.Context) {
 	goqu.SetTimeLocation(loc)
 
 	// Get the holiday data for the specified day.
-	dataSet := db.From(TableHolidaysJp).
-		Where(goqu.C(ColumnDate).Eq(request.Date))
-	ok, err := dataSet.ScanStruct(&holiday)
-
-	if err != nil {
-		logger.Error(err)
-		BadRequestJson(c, err.Error())
-		return
-	}
+	holiday.Date = request.Date
+	result := db.First(&holiday)
+	err := result.Error
 
 	var isHoliday model.IsHoliday
-	if ok {
-		// If the holiday data exists, return it.
-		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: holiday}
-	} else {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		//	If the holiday data does not exist, return the date.
-		isHoliday = model.IsHoliday{IsHoliday: ok, HolidayData: model.HolidayData{Date: request.Date}}
+		isHoliday = model.IsHoliday{IsHoliday: false, HolidayData: holiday}
+	} else {
+		// If the holiday data exists, return it.
+		isHoliday = model.IsHoliday{IsHoliday: true, HolidayData: holiday}
 	}
 	logger.Debug(isHoliday)
 	c.JSON(http.StatusOK, isHoliday)
