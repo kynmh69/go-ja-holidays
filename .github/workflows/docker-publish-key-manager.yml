@@ -133,9 +133,12 @@ jobs:
     - name: Run migration
       working-directory: ${{ env.SRC_DIR }}
       shell: bash -l {0}
+      env:
+        PSQL_HOSTNAME: localhost
+        DATABASE: unittest
       run: |
         go mod download
-        PSQL_HOSTNAME=localhost go run cmd/migration.go
+        go run cmd/migration.go
 
     - name: Build
       working-directory: ${{ env.KEY_MAN_DIR }}
