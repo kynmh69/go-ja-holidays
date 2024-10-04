@@ -154,7 +154,7 @@ jobs:
         DATABASE: unittest
       run: |
         go mod download
-        go cmd/migration.go
+        go run cmd/migration.go
 
     - name: Build
       working-directory: ${{ env.KEY_MAN_DIR }}
