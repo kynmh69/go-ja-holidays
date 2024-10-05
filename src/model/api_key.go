@@ -23,6 +23,13 @@ func GetApiKeys() ([]ApiKey, error) {
 	return apiKeys, err
 }
 
+func GetApiKey(apiKeyStr string) (ApiKey, error) {
+	var apiKey ApiKey
+	db := database.GetDbConnection()
+	err := db.First(&apiKey).Where("key = ?", apiKeyStr).Error
+	return apiKey, err
+}
+
 func CreateApiKey() error {
 	logger := logging.GetLogger()
 	db := database.GetDbConnection()
