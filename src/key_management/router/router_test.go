@@ -1,17 +1,16 @@
 package router
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"testing"
-
-	"github.com/kynmh69/go-ja-holidays/util"
-	"github.com/labstack/echo/v4"
 )
 
 func TestMakeRoute(t *testing.T) {
-	e := echo.New()
-	util.EchoLoggerInitialize(e)
+	logging.LoggerInitialize()
+	r := gin.Default()
 	type args struct {
-		e *echo.Echo
+		e *gin.Engine
 	}
 	tests := []struct {
 		name string
@@ -19,7 +18,7 @@ func TestMakeRoute(t *testing.T) {
 	}{
 		{
 			name: "test ok",
-			args: args{e: e},
+			args: args{e: r},
 		},
 	}
 	for _, tt := range tests {

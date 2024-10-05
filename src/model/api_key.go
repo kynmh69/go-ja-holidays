@@ -1,58 +1,43 @@
 package model
 
 import (
+	"github.com/kynmh69/go-ja-holidays/logging"
 	"time"
 
-	"github.com/doug-martin/goqu/v9"
 	"github.com/google/uuid"
 	"github.com/kynmh69/go-ja-holidays/database"
-	"github.com/labstack/echo/v4"
 )
 
-const TABLE_API_KEY = "api_key"
-const COLUMN_KEY = "api_key"
-const COLUMN_CREATED_AT = "created_at"
+const ColumnCreatedAt = "created_at"
 
 type ApiKey struct {
-	Id        string    `db:"id" goqu:"skipinsert"`
-	Key       string    `db:"api_key"`
-	CreatedAt time.Time `db:"created_at" goqu:"skipinsert"`
+	Id        uuid.UUID `gorm:"id;primary_key;default:gen_random_uuid();"`
+	Key       uuid.UUID `gorm:"api_key;not null;unique;default:gen_random_uuid();"`
+	CreatedAt time.Time `gorm:"created_at"`
 }
 
 func GetApiKeys() ([]ApiKey, error) {
 	var apiKeys []ApiKey
 	db := database.GetDbConnection()
-	err := db.From(TABLE_API_KEY).Order(goqu.C(COLUMN_CREATED_AT).Asc()).ScanStructs(&apiKeys)
+	err := db.Find(&apiKeys).Order(ColumnCreatedAt).Error
 	return apiKeys, err
 }
 
-func GetApiKey(key string) (ApiKey, error) {
-	var apiKey ApiKey
+func CreateApiKey() error {
+	logger := logging.GetLogger()
 	db := database.GetDbConnection()
-	_, err := db.From(TABLE_API_KEY).Where(goqu.C(COLUMN_KEY).Eq(key)).ScanStruct(&apiKey)
-	return apiKey, err
-}
-
-func CreateApiKey(c echo.Context) error {
-	logger := c.Logger()
-	key := uuid.New()
-	db := database.GetDbConnection()
-	result, err := db.Insert(TABLE_API_KEY).
-		Rows(
-			ApiKey{Key: key.String()},
-		).
-		Executor().Exec()
+	var key ApiKey
+	tx := db.Create(&key)
+	err := tx.Error
 	if err != nil {
 		return err
 	}
-
-	id, _ := result.RowsAffected()
-	logger.Info("Create API Key.", id)
+	logger.Info("Create API Key.", key.Id)
 	return err
 }
 
-func DeleteApiKey(c echo.Context) error {
-	logger := c.Logger()
+func DeleteApiKey() error {
+	logger := logging.GetLogger()
 	db := database.GetDbConnection()
 	defaultLocation := time.Local
 	logger.Debug(defaultLocation)
@@ -63,14 +48,11 @@ func DeleteApiKey(c echo.Context) error {
 	time.Local = loc
 	anHourAgo := time.Now().Add(-1 * time.Hour)
 	logger.Debug("an hour ago: ", anHourAgo)
-	result, err := db.Delete(TABLE_API_KEY).Where(
-		goqu.C(COLUMN_CREATED_AT).Lt(anHourAgo),
-	).Executor().Exec()
-
-	if err != nil {
-		return err
+	result := db.Where(ColumnCreatedAt+" <= ?", anHourAgo).Delete(&ApiKey{})
+	if result.Error != nil {
+		return result.Error
 	}
-	row, _ := result.RowsAffected()
+	row := result.RowsAffected
 	logger.Debug("Row affected", row)
-	return err
+	return nil
 }

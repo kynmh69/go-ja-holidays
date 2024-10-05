@@ -1,50 +1,41 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
+	"github.com/gin-gonic/gin"
+	"github.com/kynmh69/go-ja-holidays/logging"
+	"gorm.io/gorm"
 	"os"
 
 	_ "github.com/lib/pq"
 
-	// import the dialect
-	"github.com/doug-martin/goqu/v9"
-	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
+	"gorm.io/driver/postgres"
 )
 
-var goquDb *goqu.Database
+var db *gorm.DB
 
-const DATABASE_NAME = "holidays"
+const NAME = "holidays"
 
 func ConnectDatabase() {
 	// connect to database
 	var err error
+	logger := logging.GetLogger()
 	hostname, port, dataSourceName := CreateConnectInfo()
-
-	db, err := sql.Open("postgres", dataSourceName)
+	db, err = gorm.Open(postgres.Open(dataSourceName), &gorm.Config{})
 	if err != nil {
-		log.Fatalln("can not open database.", err)
+		logger.Panicln("can not open database.", err)
 	}
 
-	log.Println("Connecting to database...", hostname, port)
-
-	err = db.Ping()
-	if err == nil {
-		log.Println("Connected to database.")
-	} else {
-		log.Fatalln("can not ping.", err)
-	}
-
-	goquDb = goqu.New("postgres", db)
-	goquDb.Logger(initLogger())
+	logger.Info("Connecting to database...", hostname, port)
 }
 
 func CreateConnectInfo() (string, string, string) {
-
 	hostname, port, username, password, databaseName := getConnectionInfo()
 
-	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", hostname, port, username, password, databaseName)
+	dataSourceName := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Tokyo",
+		hostname, port, username, password, databaseName,
+	)
 	return hostname, port, dataSourceName
 }
 
@@ -68,15 +59,15 @@ func getConnectionInfo() (hostname, port, username, password, databaseName strin
 	databaseName, ok = os.LookupEnv("DATABASE")
 
 	if !ok {
-		databaseName = DATABASE_NAME
+		databaseName = NAME
 	}
 	return
 }
 
-func GetDbConnection() *goqu.Database {
-	return goquDb
-}
-
-func initLogger() *log.Logger {
-	return log.New(os.Stdout, "[SQL] ", log.LstdFlags|log.Lshortfile)
+func GetDbConnection() *gorm.DB {
+	ginMode := gin.Mode()
+	if ginMode == gin.DebugMode {
+		return db.Debug()
+	}
+	return db
 }

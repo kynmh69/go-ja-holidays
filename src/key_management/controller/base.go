@@ -1,11 +1,13 @@
 package controller
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type Controller interface {
-	Retrieve(c echo.Context) error
-	Create(c echo.Context) error
-	Update(c echo.Context) error
-	Delete(c echo.Context) error
+	Retrieve(r *gin.Context)
+	Create(r *gin.Context)
+	Update(r *gin.Context)
+	Delete(r *gin.Context)
 	GetControllerName() string
 }

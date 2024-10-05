@@ -31,6 +31,7 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   API_DIR: "src/api"
+  SRC_DIR: "src"
   AWS_REGION: us-east-1
   ECS_SERVICE: holidays-api-service
   ECS_CLUSTER: holidays-cluster
@@ -123,16 +124,19 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.22'
+        go-version: '1.23'
         cache-dependency-path: |
             src/go.sum
 
     - name: Run migration
-      working-directory: ${{ env.API_DIR }}
+      working-directory: ${{ env.SRC_DIR }}
       shell: bash -l {0}
+      env:
+        PSQL_HOSTNAME: localhost
+        DATABASE: unittest
       run: |
-        go install github.com/pressly/goose/v3/cmd/goose@latest
-        $(go env GOPATH)/bin/goose --dir database/migrations/  postgres "host=localhost user=app password=password dbname=unittest sslmode=disable" up
+        go mod download
+        go run cmd/migration.go
 
 
     - name: Build

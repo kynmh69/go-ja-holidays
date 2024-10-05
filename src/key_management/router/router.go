@@ -2,22 +2,21 @@ package router
 
 import (
 	"fmt"
-	"log"
-
+	"github.com/gin-gonic/gin"
 	"github.com/kynmh69/go-ja-holidays/key_management/controller"
-	"github.com/labstack/echo/v4"
+	"github.com/kynmh69/go-ja-holidays/logging"
 )
 
-func MakeRoute(e *echo.Echo) {
+func MakeRoute(r *gin.Engine) {
 	controllers := []controller.Controller{
 		controller.KeyManagement{ControllerName: "key"},
 	}
 	for _, v := range controllers {
 		path := fmt.Sprintf("/manage/%s", v.GetControllerName())
-		log.Println(path)
-		e.POST(fmt.Sprintf("%s/create", path), v.Create)
-		e.GET(path, v.Retrieve)
-		e.PUT(path, v.Update)
-		e.POST(fmt.Sprintf("%s/delete", path), v.Delete)
+		logging.GetLogger().Debugln(path)
+		r.POST(fmt.Sprintf("%s/create", path), v.Create)
+		r.GET(path, v.Retrieve)
+		r.PUT(path, v.Update)
+		r.POST(fmt.Sprintf("%s/delete", path), v.Delete)
 	}
 }
