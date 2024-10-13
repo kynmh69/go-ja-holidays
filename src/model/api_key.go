@@ -24,9 +24,13 @@ func GetApiKeys() ([]ApiKey, error) {
 }
 
 func GetApiKey(apiKeyStr string) (ApiKey, error) {
+	logger := logging.GetLogger()
 	var apiKey ApiKey
 	db := database.GetDbConnection()
-	err := db.First(&apiKey).Where("key = ?", apiKeyStr).Error
+	err := db.Where("key = ?", apiKeyStr).First(&apiKey).Error
+	if err != nil {
+		logger.Debug("API key is invalid. ", apiKeyStr)
+	}
 	return apiKey, err
 }
 
