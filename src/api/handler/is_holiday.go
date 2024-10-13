@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/doug-martin/goqu/v9"
 	"github.com/gin-gonic/gin"
 
 	"github.com/kynmh69/go-ja-holidays/database"
@@ -32,15 +31,11 @@ func IsHoliday(c *gin.Context) {
 		BadRequestJson(c, err.Error())
 		return
 	}
-	logger.Debug(request.Date)
-
-	// Set the time zone to JST.
-	loc := request.Date.Location()
-	goqu.SetTimeLocation(loc)
+	logger.Debug("requested date ", request.Date)
 
 	// Get the holiday data for the specified day.
 	holiday.Date = request.Date
-	result := db.First(&holiday)
+	result := db.Where(&holiday).Take(&holiday)
 	err := result.Error
 
 	var isHoliday model.IsHoliday
