@@ -2,13 +2,10 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/kynmh69/go-ja-holidays/database"
 	"github.com/kynmh69/go-ja-holidays/logging"
 	"github.com/kynmh69/go-ja-holidays/model"
 	"net/http"
-	"time"
-
-	"github.com/doug-martin/goqu/v9"
-	"github.com/kynmh69/go-ja-holidays/database"
 )
 
 type CountStruct struct {
@@ -18,12 +15,6 @@ type CountStruct struct {
 func CountHolidays(c *gin.Context) {
 	logger := logging.GetLogger()
 	var request HolidaysRequest
-	if location, err := time.LoadLocation(LOCATION); err != nil {
-		BadRequestJson(c, err.Error())
-		return
-	} else {
-		goqu.SetTimeLocation(location)
-	}
 
 	if err := c.ShouldBindQuery(&request); err != nil {
 		logger.Error(err)
@@ -35,11 +26,11 @@ func CountHolidays(c *gin.Context) {
 
 	dataSet := db.Model(&model.HolidayData{})
 	if !request.StartDay.IsZero() && !request.EndDay.IsZero() {
-		dataSet = dataSet.Where("created_at BETWEEN ? AND ?", request.StartDay, request.EndDay)
+		dataSet = dataSet.Where("date BETWEEN ? AND ?", request.StartDay, request.EndDay)
 	} else if !request.StartDay.IsZero() {
-		dataSet = dataSet.Where("created_at >= ?", request.StartDay)
+		dataSet = dataSet.Where("date >= ?", request.StartDay)
 	} else if !request.EndDay.IsZero() {
-		dataSet = dataSet.Where("created_at <= ?", request.EndDay)
+		dataSet = dataSet.Where("date <= ?", request.EndDay)
 	}
 	var count int64
 	err := dataSet.Count(&count).Error
