@@ -7,7 +7,7 @@ import (
 )
 
 func MakeRoute(r *gin.Engine) {
-	r.Use(middleware.Auth())
+	r.Use(middleware.Auth)
 	r.GET("/holidays", handler.GetHolidays)
 	r.GET("/holidays/:date", handler.IsHoliday)
 	r.GET("/holidays/count", handler.CountHolidays)
