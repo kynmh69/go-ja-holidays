@@ -13,8 +13,7 @@ import (
 )
 
 const (
-	ColumnDate = "holiday_date"
-	LOCATION   = "Asia/Tokyo"
+	LOCATION = "Asia/Tokyo"
 )
 
 type HolidaysRequest struct {
